@@ -1,33 +1,18 @@
-HELP.md
-target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+lecture_extracts/
+Projektarbeit_WS_2026_extracted.txt
+.DS_Store
+**/.DS_Store
+__MACOSX/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
+### IDEs ###
+.idea/
+.vscode/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+### Build output ###
+target/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
