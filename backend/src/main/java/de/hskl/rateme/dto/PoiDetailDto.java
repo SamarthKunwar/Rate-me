@@ -3,10 +3,10 @@ package de.hskl.rateme.dto;
 public record PoiDetailDto(
                 Long id,
                 String name,
+                String type,
                 String amenity,
                 String cuisine,
                 String phone,
-                String type,
                 String website,
                 Double lat,
                 Double lon,
