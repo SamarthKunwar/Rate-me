@@ -108,3 +108,194 @@ Entities represent the database tables. DTOs represent the data exchanged betwee
 | `CreateRatingRequest` | Data needed to create a rating                                  |
 | `UpdateRatingRequest` | Data needed to edit a rating                                    |
 | `MyRatingDto`         | Rating data shown in the "My Ratings" tab                       |
+
+## Backend Architecture
+
+The backend is built as a Spring Boot REST application. The code is separated into layers so that each class has one clear responsibility.
+
+```text
+Frontend
+   ↓
+Controller
+   ↓
+Service
+   ↓
+DataAccess
+   ↓
+Database
+```
+
+### Package Structure
+
+| Package | Responsibility |
+| ------- | -------------- |
+| `controller` | REST endpoints. Controllers receive HTTP requests and return DTOs as JSON. |
+| `service` | Application logic. Services decide what the app should do and convert entities to DTOs. |
+| `dataaccess` | Manual database access with JPA `EntityManager`. No Spring Data repositories are used. |
+| `entity` | Java classes mapped to database tables. |
+| `dto` | Java records used for REST request and response data. |
+| `auth` | Authentication helper logic, for example password hashing and later token handling. |
+
+### Layer Responsibilities
+
+Controllers should only handle HTTP:
+
+```text
+URL + HTTP method + call service + return result
+```
+
+Services contain the app rules:
+
+```text
+validate input
+handle not-found cases
+convert entities to DTOs
+coordinate DataAccess classes
+```
+
+DataAccess classes talk to the database:
+
+```text
+EntityManager queries
+persist
+find
+update
+delete
+```
+
+Entities represent database rows:
+
+```text
+poi table    → Poi entity
+user table   → User entity
+rating table → Rating entity
+image table  → Image entity
+```
+
+DTOs represent API data:
+
+```text
+Poi entity → PoiOverviewDto
+Poi entity → PoiDetailDto
+User entity → CurrentUserDto
+```
+
+Sensitive fields such as `password_hash` and `password_salt` are never sent to the frontend.
+
+## Current Backend Status
+
+### Implemented POI Flow
+
+The first complete backend flow is implemented for POIs.
+
+```text
+GET /pois
+GET /pois/{id}
+```
+
+Request flow:
+
+```text
+PoiController
+   ↓
+PoiService
+   ↓
+PoiDataAccess
+   ↓
+EntityManager
+   ↓
+poi table
+```
+
+Response flow:
+
+```text
+poi table
+   ↓
+Poi entity
+   ↓
+PoiService maps entity to DTO
+   ↓
+PoiOverviewDto or PoiDetailDto
+   ↓
+JSON response
+```
+
+`GET /pois` returns a list of `PoiOverviewDto` objects for map markers.
+
+`GET /pois/{id}` returns one `PoiDetailDto` for the selected location.
+
+### User Data Access
+
+`UserDataAccess` is responsible for database access to the `user` table.
+
+Current responsibilities:
+
+```text
+create a user
+find a user by id
+find a user by username
+check whether a username already exists
+```
+
+Password hashing is not done in `UserDataAccess`, because database access and authentication logic are separate responsibilities.
+
+### Password Handling
+
+`PasswordService` is responsible for password-related security logic.
+
+Current responsibilities:
+
+```text
+generate random salt
+hash password with salt
+compare entered password with stored password hash
+```
+
+The application does not store plain text passwords. During registration, the backend creates:
+
+```text
+password_salt
+password_hash
+```
+
+During login, the backend hashes the entered password again with the stored salt and compares the result with the stored hash.
+
+## Backend Rules From The Lecture Notes
+
+The implementation follows the lecture style:
+
+| Rule | Implementation Direction |
+| ---- | ------------------------ |
+| Use REST resources | Endpoints use nouns such as `/pois` instead of verbs like `/getPois`. |
+| Use HTTP methods correctly | `GET` for reading, `POST` for creating, `PUT` for updating, `DELETE` for deleting. |
+| Use DTO records | REST request and response objects are Java records. |
+| Use JPA manually | DataAccess classes use `EntityManager`. |
+| No Spring Data | No `JpaRepository` or `CrudRepository`. |
+| No Spring Security/JWT | Authentication will use a custom token mechanism. |
+| Store passwords safely | Passwords are stored as hash + salt, never as plain text. |
+
+## Next Backend Steps
+
+The next backend parts are:
+
+```text
+AuthTokenManager
+AuthService
+AuthController
+RatingDataAccess
+RatingService
+RatingController
+ImageDataAccess
+Image handling
+```
+
+For the 1.0 target, the backend should later also include:
+
+```text
+edit/delete rating
+delete user
+logging to host file
+OpenAPI documentation
+JUnit tests for DataAccess and controller classes
+```
