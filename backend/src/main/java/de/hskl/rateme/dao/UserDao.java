@@ -1,20 +1,20 @@
-package de.hskl.rateme.dataaccess;
+package de.hskl.rateme.dao;
 
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityManager;
 import de.hskl.rateme.entity.User;
+import jakarta.persistence.EntityManager;
 
 @Service
 @Transactional
-public class UserDataAccess {
+public class UserDao {
 
     private final EntityManager entityManager;
 
-    public UserDataAccess(EntityManager entityManager) {
+    public UserDao(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -30,7 +30,8 @@ public class UserDataAccess {
     }
 
     public Optional<User> findByUsername(String username) {
-        return Optional.ofNullable(entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+        return Optional.ofNullable(entityManager
+                .createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
                 .setParameter("username", username)
                 .getSingleResultOrNull());
     }
@@ -39,5 +40,5 @@ public class UserDataAccess {
         return findByUsername(username).isPresent();
     }
 
-    //public void delete(User user){ }
+    // TODO: Add delete support for the delete-user bonus feature.
 }

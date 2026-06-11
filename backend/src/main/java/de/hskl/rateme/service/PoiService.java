@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import de.hskl.rateme.dataaccess.PoiDataAccess;
+import de.hskl.rateme.dao.PoiDao;
 import de.hskl.rateme.dto.PoiDetailDto;
 import de.hskl.rateme.dto.PoiOverviewDto;
 import de.hskl.rateme.entity.Poi;
@@ -14,14 +14,14 @@ import de.hskl.rateme.entity.Poi;
 @Service
 public class PoiService {
 
-    private final PoiDataAccess poiDataAccess;
+    private final PoiDao poiDao;
 
-    public PoiService(PoiDataAccess poiDataAccess) {
-        this.poiDataAccess = poiDataAccess;
+    public PoiService(PoiDao poiDao) {
+        this.poiDao = poiDao;
     }
 
     public List<PoiOverviewDto> findAllPois() {
-        return poiDataAccess.findAll()
+        return poiDao.findAll()
                 .stream()
                 .map(poi -> new PoiOverviewDto(
                         poi.getId(),
@@ -33,7 +33,7 @@ public class PoiService {
     }
 
     public PoiDetailDto findPoiById(Long id) {
-        Poi poi = poiDataAccess.findById(id)
+        Poi poi = poiDao.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         return new PoiDetailDto(
