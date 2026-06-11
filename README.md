@@ -75,43 +75,43 @@ A rating can optionally contain an image. This is represented by the nullable fo
 
 ### Dependencies
 
-| Relationship | Foreign Key | Meaning |
-| ------------ | ----------- | ------- |
-| `user` -> `rating` | `rating.user_id` references `user.id` | A rating must belong to an existing user |
-| `poi` -> `rating` | `rating.poi_id` references `poi.id` | A rating must belong to an existing POI |
-| `image` -> `rating` | `rating.image_id` references `image.id` | A rating may optionally have an image |
+| Relationship        | Foreign Key                             | Meaning                                  |
+| ------------------- | --------------------------------------- | ---------------------------------------- |
+| `user` -> `rating`  | `rating.user_id` references `user.id`   | A rating must belong to an existing user |
+| `poi` -> `rating`   | `rating.poi_id` references `poi.id`     | A rating must belong to an existing POI  |
+| `image` -> `rating` | `rating.image_id` references `image.id` | A rating may optionally have an image    |
 
 ## REST Use Cases And DTO Planning
 
-| Use Case | Frontend Sends | Backend Returns |
-| -------- | -------------- | --------------- |
-| Register user | Username, email, firstname, lastname, address data, password | Session token and user information |
-| Login user | Username and password | Session token and user information |
-| Logout user | Session token | Success message |
-| Load map | Session token | List of POIs with id, name, latitude, longitude, and amenity |
-| Select POI | POI id and session token | POI details and existing ratings |
-| Create rating | POI id, grade, comment text, optional image, session token | Created rating |
-| Load my ratings | Session token | List of ratings created by the logged-in user |
-| Edit rating | Rating id, grade, comment text, optional image, session token | Updated rating |
-| Delete rating | Rating id and session token | Success message |
-| Delete user | Session token | Success message, user and related ratings are deleted |
+| Use Case        | Frontend Sends                                                | Backend Returns                                              |
+| --------------- | ------------------------------------------------------------- | ------------------------------------------------------------ |
+| Register user   | Username, email, firstname, lastname, address data, password  | Session token and user information                           |
+| Login user      | Username and password                                         | Session token and user information                           |
+| Logout user     | Session token                                                 | Success message                                              |
+| Load map        | Session token                                                 | List of POIs with id, name, latitude, longitude, and amenity |
+| Select POI      | POI id and session token                                      | POI details and existing ratings                             |
+| Create rating   | POI id, grade, comment text, optional image, session token    | Created rating                                               |
+| Load my ratings | Session token                                                 | List of ratings created by the logged-in user                |
+| Edit rating     | Rating id, grade, comment text, optional image, session token | Updated rating                                               |
+| Delete rating   | Rating id and session token                                   | Success message                                              |
+| Delete user     | Session token                                                 | Success message, user and related ratings are deleted        |
 
 ## DTO Idea
 
 Entities represent the database tables. DTOs represent the data exchanged between frontend and backend.
 
-| DTO | Purpose |
-| --- | ------- |
-| `RegisterRequest` | Data needed to create a new user |
-| `LoginRequest` | Data needed to log in |
-| `LoginResponse` | Session token and basic user information after successful login |
-| `CurrentUserDto` | Basic information about the logged-in user |
-| `PoiOverviewDto` | Small POI data for displaying markers on the map |
-| `PoiDetailDto` | Detailed POI data after selecting a marker |
-| `RatingDto` | Rating data shown for a selected POI |
-| `CreateRatingRequest` | Data needed to create a rating |
-| `UpdateRatingRequest` | Data needed to edit a rating |
-| `MyRatingDto` | Rating data shown in the "My Ratings" tab |
+| DTO                   | Purpose                                                         |
+| --------------------- | --------------------------------------------------------------- |
+| `RegisterRequest`     | Data needed to create a new user                                |
+| `LoginRequest`        | Data needed to log in                                           |
+| `LoginResponse`       | Session token and basic user information after successful login |
+| `CurrentUserDto`      | Basic information about the logged-in user                      |
+| `PoiOverviewDto`      | Small POI data for displaying markers on the map                |
+| `PoiDetailDto`        | Detailed POI data after selecting a marker                      |
+| `RatingDto`           | Rating data shown for a selected POI                            |
+| `CreateRatingRequest` | Data needed to create a rating                                  |
+| `UpdateRatingRequest` | Data needed to edit a rating                                    |
+| `MyRatingDto`         | Rating data shown in the "My Ratings" tab                       |
 
 ## Backend Architecture
 
@@ -131,14 +131,14 @@ Database
 
 ### Package Structure
 
-| Package | Responsibility |
-| ------- | -------------- |
-| `controller` | REST endpoints. Controllers receive HTTP requests and return DTOs as JSON. |
-| `service` | Application logic. Services decide what the app should do and convert entities to DTOs. |
-| `dao` | Manual database access with JPA `EntityManager`. No Spring Data repositories are used. |
-| `entity` | Java classes mapped to database tables. |
-| `dto` | Java records used for REST request and response data. |
-| `auth` | Authentication helper logic, for example password hashing and token handling. |
+| Package      | Responsibility                                                                          |
+| ------------ | --------------------------------------------------------------------------------------- |
+| `controller` | REST endpoints. Controllers receive HTTP requests and return DTOs as JSON.              |
+| `service`    | Application logic. Services decide what the app should do and convert entities to DTOs. |
+| `dao`        | Manual database access with JPA `EntityManager`. No Spring Data repositories are used.  |
+| `entity`     | Java classes mapped to database tables.                                                 |
+| `dto`        | Java records used for REST request and response data.                                   |
+| `auth`       | Authentication helper logic, for example password hashing and token handling.           |
 
 ### Layer Responsibilities
 
@@ -187,47 +187,6 @@ User entity -> CurrentUserDto
 Sensitive fields such as `password_hash` and `password_salt` are never sent to the frontend.
 
 ## Current Backend Status
-
-### Implemented POI Flow
-
-The first complete backend flow is implemented for POIs.
-
-```text
-GET /pois
-GET /pois/{id}
-```
-
-Request flow:
-
-```text
-PoiController
-   ↓
-PoiService
-   ↓
-PoiDao
-   ↓
-EntityManager
-   ↓
-poi table
-```
-
-Response flow:
-
-```text
-poi table
-   ↓
-Poi entity
-   ↓
-PoiService maps entity to DTO
-   ↓
-PoiOverviewDto or PoiDetailDto
-   ↓
-JSON response
-```
-
-`GET /pois` returns a list of `PoiOverviewDto` objects for map markers.
-
-`GET /pois/{id}` returns one `PoiDetailDto` for the selected location.
 
 ### User DAO
 
@@ -286,36 +245,18 @@ This is a simple custom token mechanism and not JWT.
 
 The implementation follows the lecture style:
 
-| Rule | Implementation Direction |
-| ---- | ------------------------ |
-| Use REST resources | Endpoints use nouns such as `/pois` instead of verbs like `/getPois`. |
+| Rule                       | Implementation Direction                                                           |
+| -------------------------- | ---------------------------------------------------------------------------------- |
+| Use REST resources         | Endpoints use nouns such as `/pois` instead of verbs like `/getPois`.              |
 | Use HTTP methods correctly | `GET` for reading, `POST` for creating, `PUT` for updating, `DELETE` for deleting. |
-| Use DTO records | REST request and response objects are Java records. |
-| Use JPA manually | DAO classes use `EntityManager`. |
-| No Spring Data | No `JpaRepository` or `CrudRepository`. |
-| No Spring Security/JWT | Authentication uses a custom token mechanism. |
-| Store passwords safely | Passwords are stored as hash + salt, never as plain text. |
+| Use DTO records            | REST request and response objects are Java records.                                |
+| Use JPA manually           | DAO classes use `EntityManager`.                                                   |
+| No Spring Data             | No `JpaRepository` or `CrudRepository`.                                            |
+| No Spring Security/JWT     | Authentication uses a custom token mechanism.                                      |
+| Store passwords safely     | Passwords are stored as hash + salt, never as plain text.                          |
 
-## Next Backend Steps
+tests for DAO and controller classes
 
-The next backend parts are:
-
-```text
-AuthService
-AuthController
-RatingDao
-RatingService
-RatingController
-ImageDao
-Image handling
 ```
 
-For the 1.0 target, the backend should later also include:
-
-```text
-edit/delete rating
-delete user
-logging to host file
-OpenAPI documentation
-JUnit tests for DAO and controller classes
 ```
