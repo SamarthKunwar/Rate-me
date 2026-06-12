@@ -1,11 +1,15 @@
 package de.hskl.rateme.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import de.hskl.rateme.auth.PasswordService;
 import de.hskl.rateme.dao.UserDao;
-import de.hskl.rateme.dto.LoginResponse;
-import de.hskl.rateme.dto.RegisterRequest;
+import de.hskl.rateme.dto.LoginDtoOut;
+import de.hskl.rateme.dto.UserDtoIn;
+import de.hskl.rateme.dto.UserDtoOut;
+import de.hskl.rateme.entity.User;
 import de.hskl.rateme.auth.AuthTokenManager;
 
 @Service
@@ -21,7 +25,7 @@ public class AuthService {
         this.authTokenManager = authTokenManager;
     }
 
-    public LoginResponse registerUser(RegisterRequest request) {
+    public LoginDtoOut registerUser(UserDtoIn request) {
 
         if (userDao.existsByUsername(request.username())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
@@ -36,9 +40,9 @@ public class AuthService {
 
         String token = authTokenManager.createToken(user);
 
-        CurrentUserDto currentUser = new CurrentUserDto(user.getId(), user.getUsername(), user.getEmail(),
+        UserDtoOut currentUser = new UserDtoOut(user.getId(), user.getUsername(), user.getEmail(),
                 user.getFirstname(), user.getLastname());
-        return new LoginResponse(token, currentUser);
+        return new LoginDtoOut(token, currentUser);
     }
 
 }

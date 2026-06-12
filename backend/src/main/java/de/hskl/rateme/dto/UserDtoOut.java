@@ -1,6 +1,6 @@
 package de.hskl.rateme.dto;
 
-public record CurrentUserDto(
+public record UserDtoOut(
         Integer id,
         String username,
         String email,

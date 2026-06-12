@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.hskl.rateme.dto.PoiDetailDto;
-import de.hskl.rateme.dto.PoiOverviewDto;
+import de.hskl.rateme.dto.PoiDetailDtoOut;
+import de.hskl.rateme.dto.PoiOverviewDtoOut;
 import de.hskl.rateme.service.PoiService;
 
 @RestController
@@ -22,12 +22,12 @@ public class PoiController {
     }
 
     @GetMapping
-    public List<PoiOverviewDto> getAllPois() {
+    public List<PoiOverviewDtoOut> getAllPois() {
         return poiService.findAllPois();
     }
 
     @GetMapping("/{id}")
-    public PoiDetailDto getOnePoi(@PathVariable Long id) {
+    public PoiDetailDtoOut getOnePoi(@PathVariable Long id) {
         return poiService.findPoiById(id);
     }
 }

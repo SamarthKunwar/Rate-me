@@ -2,7 +2,7 @@ package de.hskl.rateme.dto;
 
 import java.time.LocalDateTime;
 
-public record MyRatingDto(Integer id,
+public record MyRatingDtoOut(Integer id,
         Long poiId,
         String poiName,
         Integer grade,

@@ -100,18 +100,18 @@ A rating can optionally contain an image. This is represented by the nullable fo
 
 Entities represent the database tables. DTOs represent the data exchanged between frontend and backend.
 
-| DTO                   | Purpose                                                         |
-| --------------------- | --------------------------------------------------------------- |
-| `RegisterRequest`     | Data needed to create a new user                                |
-| `LoginRequest`        | Data needed to log in                                           |
-| `LoginResponse`       | Session token and basic user information after successful login |
-| `CurrentUserDto`      | Basic information about the logged-in user                      |
-| `PoiOverviewDto`      | Small POI data for displaying markers on the map                |
-| `PoiDetailDto`        | Detailed POI data after selecting a marker                      |
-| `RatingDto`           | Rating data shown for a selected POI                            |
-| `CreateRatingRequest` | Data needed to create a rating                                  |
-| `UpdateRatingRequest` | Data needed to edit a rating                                    |
-| `MyRatingDto`         | Rating data shown in the "My Ratings" tab                       |
+| DTO | Purpose |
+| --- | ------- |
+| `UserDtoIn` | Input data needed to create a new user |
+| `LoginDtoIn` | Input data needed to log in |
+| `LoginDtoOut` | Output data after successful login or registration |
+| `UserDtoOut` | Safe user data returned to the frontend |
+| `PoiOverviewDtoOut` | Small POI output data for displaying markers on the map |
+| `PoiDetailDtoOut` | Detailed POI output data after selecting a marker |
+| `RatingDtoIn` | Input data needed to create a rating |
+| `RatingDtoOut` | Output rating data shown for a selected POI |
+| `RatingUpdateDtoIn` | Input data needed to edit a rating |
+| `MyRatingDtoOut` | Output rating data shown in the "My Ratings" tab |
 
 ## Backend Architecture
 
@@ -179,9 +179,9 @@ image table  -> Image entity
 DTOs represent API data:
 
 ```text
-Poi entity  -> PoiOverviewDto
-Poi entity  -> PoiDetailDto
-User entity -> CurrentUserDto
+Poi entity  -> PoiOverviewDtoOut
+Poi entity  -> PoiDetailDtoOut
+User entity -> UserDtoOut
 ```
 
 Sensitive fields such as `password_hash` and `password_salt` are never sent to the frontend.

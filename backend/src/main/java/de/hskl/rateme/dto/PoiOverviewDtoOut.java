@@ -1,6 +1,6 @@
 package de.hskl.rateme.dto;
 
-public record PoiOverviewDto(
+public record PoiOverviewDtoOut(
                 Long id,
                 String name,
                 Double lat,

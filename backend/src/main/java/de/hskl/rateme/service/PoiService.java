@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import de.hskl.rateme.dao.PoiDao;
-import de.hskl.rateme.dto.PoiDetailDto;
-import de.hskl.rateme.dto.PoiOverviewDto;
+import de.hskl.rateme.dto.PoiDetailDtoOut;
+import de.hskl.rateme.dto.PoiOverviewDtoOut;
 import de.hskl.rateme.entity.Poi;
 
 @Service
@@ -20,10 +20,10 @@ public class PoiService {
         this.poiDao = poiDao;
     }
 
-    public List<PoiOverviewDto> findAllPois() {
+    public List<PoiOverviewDtoOut> findAllPois() {
         return poiDao.findAll()
                 .stream()
-                .map(poi -> new PoiOverviewDto(
+                .map(poi -> new PoiOverviewDtoOut(
                         poi.getId(),
                         poi.getName(),
                         poi.getLat(),
@@ -32,11 +32,11 @@ public class PoiService {
                 .toList();
     }
 
-    public PoiDetailDto findPoiById(Long id) {
+    public PoiDetailDtoOut findPoiById(Long id) {
         Poi poi = poiDao.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        return new PoiDetailDto(
+        return new PoiDetailDtoOut(
                 poi.getId(),
                 poi.getName(),
                 poi.getType(),

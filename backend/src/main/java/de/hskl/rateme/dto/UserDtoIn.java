@@ -1,6 +1,6 @@
 package de.hskl.rateme.dto;
 
-public record RegisterRequest(String username,
+public record UserDtoIn(String username,
                 String password,
                 String email,
                 String firstname,
