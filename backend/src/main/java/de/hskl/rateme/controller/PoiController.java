@@ -13,6 +13,7 @@ import de.hskl.rateme.service.PoiService;
 
 @RestController
 @RequestMapping("/pois")
+
 public class PoiController {
 
     private final PoiService poiService;
@@ -30,4 +31,5 @@ public class PoiController {
     public PoiDetailDtoOut getOnePoi(@PathVariable Long id) {
         return poiService.findPoiById(id);
     }
+
 }

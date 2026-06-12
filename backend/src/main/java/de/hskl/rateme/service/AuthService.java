@@ -1,6 +1,9 @@
 package de.hskl.rateme.service;
 
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -11,6 +14,7 @@ import de.hskl.rateme.dto.UserDtoIn;
 import de.hskl.rateme.dto.UserDtoOut;
 import de.hskl.rateme.entity.User;
 import de.hskl.rateme.auth.AuthTokenManager;
+import de.hskl.rateme.dto.LoginDtoIn;
 
 @Service
 public class AuthService {
@@ -43,6 +47,32 @@ public class AuthService {
         UserDtoOut currentUser = new UserDtoOut(user.getId(), user.getUsername(), user.getEmail(),
                 user.getFirstname(), user.getLastname());
         return new LoginDtoOut(token, currentUser);
+    }
+
+    public LoginDtoOut loginUser(LoginDtoIn request) {
+        Optional<User> userOptional = userDao.findByUsername(request.username());
+
+        if (userOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+        }
+        User user = userOptional.get();
+
+        boolean passwordMatch = passwordService.passwordMatches(request.password(), user.getPasswordSalt(),
+                user.getPasswordHash());
+        if (!passwordMatch) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+        }
+
+        String token = authTokenManager.createToken(user);
+
+        UserDtoOut currentUser = new UserDtoOut(user.getId(), user.getUsername(), user.getEmail(),
+                user.getFirstname(), user.getLastname());
+        return new LoginDtoOut(token, currentUser);
+    }
+
+    public void logoutUser(String token) {
+        authTokenManager.requireValidToken(token);
+        authTokenManager.removeToken(token);
     }
 
 }

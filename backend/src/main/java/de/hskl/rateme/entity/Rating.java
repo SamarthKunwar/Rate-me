@@ -37,7 +37,7 @@ public class Rating {
     @JoinColumn(name = "image_id")
     private Image image;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
     protected Rating() {
