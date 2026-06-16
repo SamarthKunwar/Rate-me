@@ -16,3 +16,4 @@ __MACOSX/
 ### Build output ###
 target/
 build/
+logs/

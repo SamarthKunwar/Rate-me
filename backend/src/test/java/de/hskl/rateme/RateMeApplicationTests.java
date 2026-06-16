@@ -1,12 +1,13 @@
 package de.hskl.rateme;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@SpringBootTest
+import org.junit.jupiter.api.Test;
+
 class RateMeApplicationTests {
 
     @Test
-    void contextLoads() {
+    void mainMethodCanBeReferenced() {
+        assertDoesNotThrow(() -> RateMeApplication.class.getDeclaredMethod("main", String[].class));
     }
 }

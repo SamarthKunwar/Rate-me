@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+
 import de.hskl.rateme.auth.PasswordService;
 import de.hskl.rateme.dao.RatingDao;
 import de.hskl.rateme.dao.UserDao;
@@ -18,6 +19,7 @@ import de.hskl.rateme.dto.UserDtoOut;
 import de.hskl.rateme.entity.Image;
 import de.hskl.rateme.entity.Rating;
 import de.hskl.rateme.entity.User;
+import de.hskl.rateme.service.ImageService;
 import de.hskl.rateme.auth.AuthTokenManager;
 import de.hskl.rateme.dto.LoginDtoIn;
 
@@ -42,7 +44,7 @@ public class AuthService {
     public LoginDtoOut registerUser(UserDtoIn request) {
 
         if (userDao.existsByUsername(request.username())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         }
 
         byte[] salt = passwordService.generateSalt();
