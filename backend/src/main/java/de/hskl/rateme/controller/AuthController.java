@@ -6,6 +6,7 @@ import de.hskl.rateme.dto.LoginDtoIn;
 import de.hskl.rateme.dto.LoginDtoOut;
 import de.hskl.rateme.dto.UserDtoIn;
 import de.hskl.rateme.service.AuthService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,4 +35,8 @@ public class AuthController {
         authService.logoutUser(token);
     }
 
+    @DeleteMapping("/me")
+    public void deleteCurrentUser(@RequestHeader("Authorization") String token) {
+        authService.deleteCurrentUser(token);
+    }
 }

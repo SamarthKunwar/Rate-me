@@ -3,6 +3,7 @@ package de.hskl.rateme.auth;
 import de.hskl.rateme.entity.User;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +25,10 @@ public class AuthTokenManager {
 
     public boolean removeToken(String token) {
         return activeTokens.remove(token) != null;
+    }
+
+    public void removeTokensForUser(Integer userId) {
+        activeTokens.entrySet().removeIf(entry -> Objects.equals(entry.getValue().getId(), userId));
     }
 
     public boolean isValid(String token) {

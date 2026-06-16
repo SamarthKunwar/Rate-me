@@ -7,6 +7,7 @@ public record RatingDtoOut(Integer id,
                 Integer grade,
                 String text,
                 LocalDateTime createdAt,
+                Integer imageId,
                 boolean hasImage) {
 
 }

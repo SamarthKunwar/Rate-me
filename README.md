@@ -186,6 +186,317 @@ User entity -> UserDtoOut
 
 Sensitive fields such as `password_hash` and `password_salt` are never sent to the frontend.
 
+## Backend Class Diagram
+
+```mermaid
+classDiagram
+
+class AuthController {
+  -AuthService authService
+  +register(UserDtoIn request) LoginDtoOut
+  +login(LoginDtoIn request) LoginDtoOut
+  +logout(String token) void
+  +deleteCurrentUser(String token) void
+}
+
+class PoiController {
+  -PoiService poiService
+  +getAllPois() List~PoiOverviewDtoOut~
+  +getOnePoi(Long id) PoiDetailDtoOut
+}
+
+class RatingController {
+  -RatingService ratingService
+  +getRatingsForPoi(Long poiId) List~RatingDtoOut~
+  +createRating(String token, RatingDtoIn request) RatingDtoOut
+  +createRatingWithImage(String token, Long poiId, Integer grade, String text, MultipartFile image) RatingDtoOut
+  +getMyRatings(String token) List~MyRatingDtoOut~
+  +updateRating(String token, Integer id, RatingDtoIn request) RatingDtoOut
+  +updateRatingWithImage(String token, Integer id, Integer grade, String text, MultipartFile image) RatingDtoOut
+  +deleteRating(String token, Integer id) void
+}
+
+class ImageController {
+  -ImageService imageService
+  +getImage(Integer id) ResponseEntity~byte[]~
+}
+
+class AuthService {
+  -UserDao userDao
+  -RatingDao ratingDao
+  -ImageService imageService
+  -PasswordService passwordService
+  -AuthTokenManager authTokenManager
+  +registerUser(UserDtoIn request) LoginDtoOut
+  +loginUser(LoginDtoIn request) LoginDtoOut
+  +logoutUser(String token) void
+  +deleteCurrentUser(String token) void
+}
+
+class PoiService {
+  -PoiDao poiDao
+  +findAllPois() List~PoiOverviewDtoOut~
+  +findPoiById(Long id) PoiDetailDtoOut
+}
+
+class RatingService {
+  -int MIN_GRADE
+  -int MAX_GRADE
+  -int MAX_TEXT_LENGTH
+  -RatingDao ratingDao
+  -PoiDao poiDao
+  -ImageService imageService
+  -AuthTokenManager authTokenManager
+  +getRatingsForPoi(Long poiId) List~RatingDtoOut~
+  +createRating(String token, RatingDtoIn request) RatingDtoOut
+  +createRatingWithImage(String token, Long poiId, Integer grade, String text, MultipartFile imageFile) RatingDtoOut
+  +getMyRatings(String token) List~MyRatingDtoOut~
+  +updateRating(String token, Integer ratingId, RatingDtoIn request) RatingDtoOut
+  +updateRatingWithImage(String token, Integer ratingId, Integer grade, String text, MultipartFile imageFile) RatingDtoOut
+  +deleteRating(String token, Integer ratingId) void
+  -getUserFromToken(String token) User
+  -validateRatingInput(RatingDtoIn request) void
+  -validateRatingInput(Integer grade, String text) void
+  -checkRatingOwner(Rating rating, User user) void
+  -toRatingDtoOut(Rating rating) RatingDtoOut
+  -toMyRatingDtoOut(Rating rating) MyRatingDtoOut
+  -getImageId(Rating rating) Integer
+}
+
+class ImageService {
+  -int MAX_IMAGE_SIZE_BYTES
+  -ImageDao imageDao
+  +saveImage(byte[] imageBytes) Image
+  +saveUploadedImage(MultipartFile file) Image
+  +getImageBytes(Integer id) byte[]
+  +deleteImage(Image image) void
+  -validateImageBytes(byte[] imageBytes) void
+}
+
+class UserDao {
+  -EntityManager entityManager
+  +create(User user) User
+  +findById(Integer id) Optional~User~
+  +findByUsername(String username) Optional~User~
+  +existsByUsername(String username) boolean
+  +delete(User user) void
+}
+
+class PoiDao {
+  -EntityManager entityManager
+  +findAll() List~Poi~
+  +findById(Long id) Optional~Poi~
+}
+
+class RatingDao {
+  -EntityManager entityManager
+  +create(Rating rating) Rating
+  +findById(Integer id) Optional~Rating~
+  +findByIdWithDetails(Integer id) Optional~Rating~
+  +findByPoiId(Long poiId) List~Rating~
+  +findByUserId(Integer userId) List~Rating~
+  +update(Rating rating) Rating
+  +delete(Rating rating) void
+  +deleteByUserId(Integer userId) int
+}
+
+class ImageDao {
+  -EntityManager entityManager
+  +create(Image image) Image
+  +findById(Integer id) Optional~Image~
+  +delete(Image image) void
+}
+
+class AuthTokenManager {
+  -Map~String, User~ activeTokens
+  +createToken(User user) String
+  +removeToken(String token) boolean
+  +removeTokensForUser(Integer userId) void
+  +isValid(String token) boolean
+  +getUser(String token) Optional~User~
+  +requireValidToken(String token) void
+}
+
+class PasswordService {
+  +generateSalt() byte[]
+  +hashPassword(String password, byte[] salt) byte[]
+  +passwordMatches(String password, byte[] salt, byte[] expectedHash) boolean
+}
+
+class User {
+  -Integer id
+  -String username
+  -String email
+  -String firstname
+  -String lastname
+  -String street
+  -String streetNr
+  -String zip
+  -String city
+  -byte[] passwordHash
+  -byte[] passwordSalt
+}
+
+class Poi {
+  -Long id
+  -String type
+  -Double lat
+  -Double lon
+  -String name
+  -String amenity
+  -String cuisine
+  -String phone
+  -String openingHours
+  -String website
+  -String wheelchair
+  -String takeaway
+  -String delivery
+  -String smoking
+  -String outdoorSeating
+  -String reservation
+  -String addrCity
+  -String addrCountry
+  -String addrHousenumber
+  -String addrPostcode
+  -String addrStreet
+  -String tags
+}
+
+class Rating {
+  -Integer id
+  -User user
+  -Poi poi
+  -Integer grade
+  -String text
+  -Image image
+  -LocalDateTime createdAt
+  +update(Integer grade, String text, Image image) void
+}
+
+class Image {
+  -Integer id
+  -byte[] img
+}
+
+AuthController --> AuthService
+PoiController --> PoiService
+RatingController --> RatingService
+ImageController --> ImageService
+
+AuthService --> UserDao
+AuthService --> RatingDao
+AuthService --> ImageService
+AuthService --> PasswordService
+AuthService --> AuthTokenManager
+
+PoiService --> PoiDao
+
+RatingService --> RatingDao
+RatingService --> PoiDao
+RatingService --> ImageService
+RatingService --> AuthTokenManager
+
+ImageService --> ImageDao
+
+UserDao --> User
+PoiDao --> Poi
+RatingDao --> Rating
+ImageDao --> Image
+
+Rating --> User
+Rating --> Poi
+Rating --> Image
+```
+
+## Backend Communication Diagrams
+
+### Create Rating With Image
+
+```mermaid
+sequenceDiagram
+    actor Frontend
+    participant RatingController
+    participant RatingService
+    participant AuthTokenManager
+    participant PoiDao
+    participant ImageService
+    participant ImageDao
+    participant RatingDao
+    participant Database
+
+    Frontend->>RatingController: POST /ratings multipart/form-data + Authorization token
+    RatingController->>RatingService: createRatingWithImage(token, poiId, grade, text, image)
+
+    RatingService->>AuthTokenManager: getUser(token)
+    AuthTokenManager-->>RatingService: Optional<User>
+
+    RatingService->>RatingService: validateRatingInput(grade, text)
+
+    RatingService->>PoiDao: findById(poiId)
+    PoiDao->>Database: SELECT poi by id
+    Database-->>PoiDao: Poi
+    PoiDao-->>RatingService: Optional<Poi>
+
+    RatingService->>ImageService: saveUploadedImage(imageFile)
+    ImageService->>ImageService: validateImageBytes(imageBytes)
+    ImageService->>ImageDao: create(new Image(imageBytes))
+    ImageDao->>Database: INSERT image
+    Database-->>ImageDao: saved Image
+    ImageDao-->>ImageService: Image
+    ImageService-->>RatingService: Image
+
+    RatingService->>RatingDao: create(new Rating(user, poi, grade, text, image))
+    RatingDao->>Database: INSERT rating
+    Database-->>RatingDao: saved Rating
+    RatingDao-->>RatingService: Rating
+
+    RatingService->>RatingService: toRatingDtoOut(savedRating)
+    RatingService-->>RatingController: RatingDtoOut
+    RatingController-->>Frontend: JSON RatingDtoOut
+```
+
+### Delete Current User
+
+```mermaid
+sequenceDiagram
+    actor Frontend
+    participant AuthController
+    participant AuthService
+    participant AuthTokenManager
+    participant RatingDao
+    participant ImageService
+    participant ImageDao
+    participant UserDao
+    participant Database
+
+    Frontend->>AuthController: DELETE /auth/me + Authorization token
+    AuthController->>AuthService: deleteCurrentUser(token)
+
+    AuthService->>AuthTokenManager: getUser(token)
+    AuthTokenManager-->>AuthService: Optional<User>
+
+    AuthService->>RatingDao: findByUserId(user.id)
+    RatingDao->>Database: SELECT ratings for user
+    Database-->>RatingDao: List<Rating>
+    RatingDao-->>AuthService: List<Rating>
+
+    loop for each rating
+        AuthService->>RatingDao: delete(rating)
+        RatingDao->>Database: DELETE rating
+
+        AuthService->>ImageService: deleteImage(image)
+        ImageService->>ImageDao: delete(image)
+        ImageDao->>Database: DELETE image
+    end
+
+    AuthService->>UserDao: delete(user)
+    UserDao->>Database: DELETE user
+
+    AuthService->>AuthTokenManager: removeTokensForUser(user.id)
+    AuthService-->>AuthController: void
+    AuthController-->>Frontend: 200/204 response
+```
+
 ## Current Backend Status
 
 ### User DAO

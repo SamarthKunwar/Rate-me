@@ -40,5 +40,9 @@ public class UserDao {
         return findByUsername(username).isPresent();
     }
 
-    // TODO: Add delete support for the delete-user bonus feature.
+    public void delete(User user) {
+        User managedUser = entityManager.contains(user) ? user : entityManager.merge(user);
+        entityManager.remove(managedUser);
+        entityManager.flush();
+    }
 }

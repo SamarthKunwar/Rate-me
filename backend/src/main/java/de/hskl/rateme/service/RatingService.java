@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import de.hskl.rateme.auth.AuthTokenManager;
@@ -13,6 +14,7 @@ import de.hskl.rateme.dao.RatingDao;
 import de.hskl.rateme.dto.MyRatingDtoOut;
 import de.hskl.rateme.dto.RatingDtoIn;
 import de.hskl.rateme.dto.RatingDtoOut;
+import de.hskl.rateme.entity.Image;
 import de.hskl.rateme.entity.Poi;
 import de.hskl.rateme.entity.Rating;
 import de.hskl.rateme.entity.User;
@@ -26,11 +28,14 @@ public class RatingService {
 
     private final RatingDao ratingDao;
     private final PoiDao poiDao;
+    private final ImageService imageService;
     private final AuthTokenManager authTokenManager;
 
-    public RatingService(RatingDao ratingDao, PoiDao poiDao, AuthTokenManager authTokenManager) {
+    public RatingService(RatingDao ratingDao, PoiDao poiDao, ImageService imageService,
+            AuthTokenManager authTokenManager) {
         this.ratingDao = ratingDao;
         this.poiDao = poiDao;
+        this.imageService = imageService;
         this.authTokenManager = authTokenManager;
     }
 
@@ -49,6 +54,21 @@ public class RatingService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "POI not found"));
 
         Rating rating = new Rating(user, poi, request.grade(), request.text(), null);
+        Rating savedRating = ratingDao.create(rating);
+
+        return toRatingDtoOut(savedRating);
+    }
+
+    public RatingDtoOut createRatingWithImage(String token, Long poiId, Integer grade, String text,
+            MultipartFile imageFile) {
+        User user = getUserFromToken(token);
+        validateRatingInput(grade, text);
+
+        Poi poi = poiDao.findById(poiId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "POI not found"));
+
+        Image image = imageService.saveUploadedImage(imageFile);
+        Rating rating = new Rating(user, poi, grade, text, image);
         Rating savedRating = ratingDao.create(rating);
 
         return toRatingDtoOut(savedRating);
@@ -77,6 +97,29 @@ public class RatingService {
         return toRatingDtoOut(updatedRating);
     }
 
+    public RatingDtoOut updateRatingWithImage(String token, Integer ratingId, Integer grade, String text,
+            MultipartFile imageFile) {
+        User user = getUserFromToken(token);
+        validateRatingInput(grade, text);
+
+        Rating rating = ratingDao.findByIdWithDetails(ratingId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rating not found"));
+
+        checkRatingOwner(rating, user);
+
+        Image oldImage = rating.getImage();
+        Image newImage = imageFile == null || imageFile.isEmpty() ? oldImage
+                : imageService.saveUploadedImage(imageFile);
+        rating.update(grade, text, newImage);
+
+        Rating updatedRating = ratingDao.update(rating);
+        if (oldImage != null && newImage != oldImage) {
+            imageService.deleteImage(oldImage);
+        }
+
+        return toRatingDtoOut(updatedRating);
+    }
+
     public void deleteRating(String token, Integer ratingId) {
         User user = getUserFromToken(token);
 
@@ -84,7 +127,9 @@ public class RatingService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Rating not found"));
 
         checkRatingOwner(rating, user);
+        Image image = rating.getImage();
         ratingDao.delete(rating);
+        imageService.deleteImage(image);
     }
 
     private User getUserFromToken(String token) {
@@ -97,9 +142,10 @@ public class RatingService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rating data is required");
         }
 
-        Integer grade = request.grade();
-        String text = request.text();
+        validateRatingInput(request.grade(), request.text());
+    }
 
+    private void validateRatingInput(Integer grade, String text) {
         if (grade == null || grade < MIN_GRADE || grade > MAX_GRADE) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Grade must be between 0 and 5");
         }
@@ -127,6 +173,7 @@ public class RatingService {
                 rating.getGrade(),
                 rating.getText(),
                 rating.getCreatedAt(),
+                getImageId(rating),
                 rating.getImage() != null);
     }
 
@@ -138,6 +185,11 @@ public class RatingService {
                 rating.getGrade(),
                 rating.getText(),
                 rating.getCreatedAt(),
+                getImageId(rating),
                 rating.getImage() != null);
+    }
+
+    private Integer getImageId(Rating rating) {
+        return rating.getImage() == null ? null : rating.getImage().getId();
     }
 }

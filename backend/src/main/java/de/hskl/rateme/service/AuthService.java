@@ -2,16 +2,21 @@ package de.hskl.rateme.service;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import de.hskl.rateme.auth.PasswordService;
+import de.hskl.rateme.dao.RatingDao;
 import de.hskl.rateme.dao.UserDao;
 import de.hskl.rateme.dto.LoginDtoOut;
 import de.hskl.rateme.dto.UserDtoIn;
 import de.hskl.rateme.dto.UserDtoOut;
+import de.hskl.rateme.entity.Image;
+import de.hskl.rateme.entity.Rating;
 import de.hskl.rateme.entity.User;
 import de.hskl.rateme.auth.AuthTokenManager;
 import de.hskl.rateme.dto.LoginDtoIn;
@@ -20,11 +25,16 @@ import de.hskl.rateme.dto.LoginDtoIn;
 public class AuthService {
 
     private final UserDao userDao;
+    private final RatingDao ratingDao;
+    private final ImageService imageService;
     private final PasswordService passwordService;
     private final AuthTokenManager authTokenManager;
 
-    public AuthService(UserDao userDao, PasswordService passwordService, AuthTokenManager authTokenManager) {
+    public AuthService(UserDao userDao, RatingDao ratingDao, ImageService imageService,
+            PasswordService passwordService, AuthTokenManager authTokenManager) {
         this.userDao = userDao;
+        this.ratingDao = ratingDao;
+        this.imageService = imageService;
         this.passwordService = passwordService;
         this.authTokenManager = authTokenManager;
     }
@@ -75,4 +85,19 @@ public class AuthService {
         authTokenManager.removeToken(token);
     }
 
+    @Transactional
+    public void deleteCurrentUser(String token) {
+        User user = authTokenManager.getUser(token)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token"));
+
+        List<Rating> ratings = ratingDao.findByUserId(user.getId());
+        for (Rating rating : ratings) {
+            Image image = rating.getImage();
+            ratingDao.delete(rating);
+            imageService.deleteImage(image);
+        }
+
+        userDao.delete(user);
+        authTokenManager.removeTokensForUser(user.getId());
+    }
 }
