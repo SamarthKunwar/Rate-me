@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate me</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/app.js" defer></script>
+</head>
+
+<body>
+    <header class="app-header">
+        <div>
+            <h1>RateMe</h1>
+            <p>Bewerte Kneipen in und um Zweibruecken</p>
+        </div>
+        <div class="account-area">
+            <span id="currentUser">Nicht angemeldet</span>
+            <div class="auth-buttons">
+                <button id="loginButton" type="button">Login</button>
+                <button id="registerButton" type="button">Registrieren</button>
+                <button id="logoutButton" type="button">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="authModal" class="auth-modal hidden">
+        <div class="auth-dialog">
+            <div class="auth-dialog-header">
+                <h2 id="authTitle">Login</h2>
+                <button id="closeAuthButton" type="button">Schliessen</button>
+            </div>
+            <div id="loginFields" class="auth-fields">
+                <input id="authUsername" type="text" placeholder="Benutzername">
+                <input id="authPassword" type="password" placeholder="Passwort">
+            </div>
+            <div id="registerFields" class="auth-fields hidden">
+                <input id="authEmail" type="email" placeholder="E-Mail">
+                <input id="authFirstname" type="text" placeholder="Vorname">
+                <input id="authLastname" type="text" placeholder="Nachname">
+                <input id="authStreet" type="text" placeholder="Strasse">
+                <input id="authStreetNr" type="text" placeholder="Nr.">
+                <input id="authZip" type="text" placeholder="PLZ">
+                <input id="authCity" type="text" placeholder="Ort">
+            </div>
+            <div class="auth-dialog-actions">
+                <button id="submitAuthButton" type="button">Login</button>
+            </div>
+            <small id="authMessage"></small>
+        </div>
+    </div>
+
+    <main class="app-layout">
+        <section class="map-section">
+            <h2>Karte</h2>
+            <div id="map"></div>
+        </section>
+        <section class="content-section">
+            <div class="w3-bar">
+                <button class="tab-button active" data-tab="ratingsTab">Bewertungen</button>
+                <button class="tab-button" data-tab="myRatingsTab">Meine Bewertungen</button>
+            </div>
+            <section id="ratingsTab" class="tab-content active">
+                <h2 id="poiName">Bitte Kneipe auswaehlen</h2>
+                <dl id="poiDetails"></dl>
+                <div id="ratingsList">
+                    <p>Noch keine Kneipe ausgewaehlt.</p>
+                </div>
+            </section>
+
+            <section id="myRatingsTab" class="tab-content">
+                <h2>Meine Bewertungen</h2>
+                <div id="myRatingsList">
+                    <p>Bitte anmelden, um eigene Bewertungen zu sehen.</p>
+                </div>
+            </section>
+        </section>
+    </main>
+</body>
+
+</html>
