@@ -1,20 +1,142 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #f5f7f8;
+    --surface: #ffffff;
+    --surface-soft: #f8faf9;
+    --border: #d9e0dd;
+    --text: #17201b;
+    --muted: #63706a;
+    --accent: #176b5b;
+    --accent-dark: #0e4f42;
+    --danger: #b42318;
+    --danger-soft: #fff1ef;
+    --shadow: 0 10px 28px rgba(20, 35, 30, 0.08);
+}
+
 body {
     margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    background: var(--bg);
     font-family: Arial, sans-serif;
 }
 
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    min-height: 36px;
+    padding: 8px 13px;
+    color: var(--accent);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: #eef7f4;
+}
+
+button:disabled {
+    color: #9aa5a0;
+    cursor: not-allowed;
+    background: #eef1ef;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 11px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid rgba(23, 107, 91, 0.18);
+    border-color: var(--accent);
+}
+
 .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 500;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 24px;
-    padding: 16px;
+    padding: 14px 24px;
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(10px);
 }
+
+.app-header h1 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.1;
+}
+
+.app-header p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
 .account-area {
     display: flex;
     align-items: center;
+    gap: 12px;
+}
+
+#currentUser {
+    color: var(--muted);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.auth-buttons,
+.auth-dialog-actions,
+.rating-actions {
+    display: flex;
     gap: 8px;
 }
+
+#loginButton,
+#submitAuthButton,
+#createRatingButton {
+    color: white;
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+#loginButton:hover:not(:disabled),
+#submitAuthButton:hover:not(:disabled),
+#createRatingButton:hover:not(:disabled) {
+    background: var(--accent-dark);
+}
+
+#deleteUserButton,
+.ratings-table button:last-child {
+    color: var(--danger);
+    background: var(--danger-soft);
+    border-color: #ffd0cb;
+}
+
 .auth-modal {
     position: fixed;
     inset: 0;
@@ -22,89 +144,274 @@ body {
     display: grid;
     place-items: center;
     padding: 16px;
-    background: rgba(0, 0, 0, 0.35);
+    background: rgba(11, 18, 16, 0.42);
 }
+
 .auth-dialog {
     width: min(100%, 440px);
     display: grid;
     gap: 14px;
-    padding: 20px;
-    background: white;
-    border: 1px solid #d0d0d0;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
 }
+
 .auth-dialog-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
+
 .auth-dialog-header h2 {
     margin: 0;
+    font-size: 20px;
 }
+
 .auth-fields {
     display: grid;
-    gap: 8px;
+    gap: 9px;
 }
+
 .hidden {
     display: none;
 }
-.auth-fields input {
-    min-width: 0;
-    padding: 6px;
-}
-.auth-buttons {
-    display: flex;
-    gap: 8px;
-}
-.auth-dialog-actions {
-    display: flex;
-    justify-content: flex-end;
-}
-#authMessage {
+
+#authMessage,
+#ratingMessage {
     min-height: 18px;
-    color: #256029;
+    color: var(--accent);
+    font-size: 13px;
 }
-#authMessage.error {
-    color: #b00020;
+
+#authMessage.error,
+#ratingMessage.error {
+    color: var(--danger);
 }
+
 .app-layout {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 16px;
-    padding: 16px;
+    grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.85fr);
+    gap: 18px;
+    padding: 18px;
 }
+
 .content-section,
 .map-section {
-    background: white;
-    border: 1px solid #ddd;
-    padding: 16px;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
 }
+
+.map-section {
+    padding: 14px;
+}
+
+.content-section {
+    padding: 0;
+    overflow: hidden;
+}
+
+.map-section h2,
+.content-section h2,
+.rating-form h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.map-section h2 {
+    margin-bottom: 12px;
+}
+
+#map {
+    width: 100%;
+    height: calc(100vh - 180px);
+    min-height: 400px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.w3-bar {
+    display: flex;
+    gap: 6px;
+    padding: 12px;
+    background: var(--surface-soft);
+    border-bottom: 1px solid var(--border);
+}
+
+.tab-button {
+    flex: 1;
+    color: var(--muted);
+    background: transparent;
+    border-color: transparent;
+}
+
+.tab-button.active {
+    color: white;
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
 .tab-content {
     display: none;
+    padding: 16px;
 }
+
 .tab-content.active {
     display: block;
 }
-#map {
+
+#poiDetails {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin: 8px 0;
+}
+
+#poiDetails div {
+    display: grid;
+    grid-template-columns: 125px minmax(0, 1fr);
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #edf1ef;
+}
+
+#poiDetails dt {
+    color: var(--muted);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+#poiDetails dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+#poiDetails .opening-hours-detail {
+    align-items: start;
+}
+
+#poiDetails .opening-hours-value {
+    overflow-x: auto;
+}
+
+.opening-hours-table {
     width: 100%;
-    height: 75vh;
-    min-height: 420px;
+    border-collapse: collapse;
+    font-size: 13px;
 }
-.rating-item {
-    border-bottom: 1px solid #f0eaea;
-    padding: 12px 0;
+
+.opening-hours-table td {
+    padding: 3px 6px 3px 0;
+    border-bottom: 1px solid #edf1ef;
+    vertical-align: top;
 }
-.rating-item img {
-    max-width: 100%;
+
+.opening-hours-table td:first-child {
+    width: 90px;
+    color: var(--muted);
+    font-weight: 700;
+    white-space: nowrap;
 }
-@media (max-width: 900px) {
+
+.opening-hours-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.rating-form {
+    display: grid;
+    gap: 10px;
+    margin: 18px 0;
+    padding: 14px;
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.rating-form textarea {
+    min-height: 96px;
+    resize: vertical;
+}
+
+.ratings-table {
+    width: 100%;
+    margin-top: 12px;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.ratings-table th,
+.ratings-table td {
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+}
+
+.ratings-table th {
+    color: var(--muted);
+    background: var(--surface-soft);
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.rating-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+}
+
+.ratings-table button {
+    margin-right: 6px;
+    margin-bottom: 4px;
+}
+
+@media (max-width: 750px) {
     .app-header,
+    .account-area {
+        align-items: flex-start;
+    }
+
+    .app-header,
+    .account-area,
+    .auth-buttons {
+        display: grid;
+    }
+
     .app-layout {
         grid-template-columns: 1fr;
     }
 
-    .app-header {
+    #map {
+        height: 55vh;
+        min-height: 360px;
+    }
+}
+
+@media (max-width: 560px) {
+    .app-header,
+    .app-layout {
+        padding: 12px;
+    }
+
+    #poiDetails div {
+        grid-template-columns: 1fr;
+        gap: 3px;
+    }
+
+    .rating-actions {
         display: grid;
+    }
+
+    .ratings-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
     }
 }

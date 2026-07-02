@@ -1,0 +1,58 @@
+name: rateme
+
+services:
+  db:
+    build:
+      context: ./db
+    container_name: rateme-db
+    restart: on-failure
+    ports:
+      - "3307:3306"
+    volumes:
+      - rateme-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      retries: 10
+      interval: 3s
+      timeout: 30s
+    networks:
+      - rateme-network
+
+  backend:
+    build:
+      context: ./backend
+    container_name: rateme-backend
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/swtp_rateme
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=
+    volumes:
+      - ./logs:/logs
+    networks:
+      - rateme-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: rateme-frontend
+    restart: on-failure
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+    networks:
+      - rateme-network
+
+networks:
+  rateme-network:
+    name: rateme-network
+    driver: bridge
+
+volumes:
+  rateme-db-data:

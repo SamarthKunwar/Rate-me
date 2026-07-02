@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import de.hskl.rateme.auth.AuthTokenManager;
 import de.hskl.rateme.dao.PoiDao;
@@ -46,6 +47,7 @@ public class RatingService {
                 .toList();
     }
 
+    @Transactional
     public RatingDtoOut createRating(String token, RatingDtoIn request) {
         User user = getUserFromToken(token);
         validateRatingInput(request);
@@ -59,6 +61,7 @@ public class RatingService {
         return toRatingDtoOut(savedRating);
     }
 
+    @Transactional
     public RatingDtoOut createRatingWithImage(String token, Long poiId, Integer grade, String text,
             MultipartFile imageFile) {
         User user = getUserFromToken(token);
@@ -83,6 +86,7 @@ public class RatingService {
                 .toList();
     }
 
+    @Transactional
     public RatingDtoOut updateRating(String token, Integer ratingId, RatingDtoIn request) {
         User user = getUserFromToken(token);
         validateRatingInput(request);
@@ -97,6 +101,7 @@ public class RatingService {
         return toRatingDtoOut(updatedRating);
     }
 
+    @Transactional
     public RatingDtoOut updateRatingWithImage(String token, Integer ratingId, Integer grade, String text,
             MultipartFile imageFile) {
         User user = getUserFromToken(token);
@@ -120,6 +125,7 @@ public class RatingService {
         return toRatingDtoOut(updatedRating);
     }
 
+    @Transactional
     public void deleteRating(String token, Integer ratingId) {
         User user = getUserFromToken(token);
 

@@ -100,6 +100,10 @@ A rating can optionally contain an image. This is represented by the nullable fo
 
 Entities represent the database tables. DTOs represent the data exchanged between frontend and backend.
 
+Entities are Java classes that represent database tables. We use them to read, save, update, and delete database data using JPA. In this project, examples are `User`, `Poi`, `Rating`, and `Image`.
+
+DTOs are API objects. They define what the frontend sends to the backend and what the backend sends back to the frontend. This keeps database objects separate from public API data.
+
 | DTO | Purpose |
 | --- | ------- |
 | `UserDtoIn` | Input data needed to create a new user |

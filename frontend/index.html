@@ -7,9 +7,9 @@
     <title>Rate me</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20260702-3">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/app.js" defer></script>
+    <script src="js/app.js?v=20260702-3" defer></script>
 </head>
 
 <body>
@@ -24,6 +24,7 @@
                 <button id="loginButton" type="button">Login</button>
                 <button id="registerButton" type="button">Registrieren</button>
                 <button id="logoutButton" type="button">Logout</button>
+                <button id="deleteUserButton" type="button">Account loeschen</button>
             </div>
         </div>
     </header>
@@ -67,6 +68,32 @@
             <section id="ratingsTab" class="tab-content active">
                 <h2 id="poiName">Bitte Kneipe auswaehlen</h2>
                 <dl id="poiDetails"></dl>
+                <div id="ratingForm" class="rating-form">
+                    <h3>Bewertung schreiben</h3>
+
+                    <select id="ratingGrade">
+                        <option value="" selected>Sterne auswaehlen</option>
+                        <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
+                        <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734;</option>
+                        <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734;</option>
+                        <option value="2">&#9733;&#9733;&#9734;&#9734;&#9734;</option>
+                        <option value="1">&#9733;&#9734;&#9734;&#9734;&#9734;</option>
+                    </select>
+
+                    <textarea id="ratingText" placeholder="Deine Bewertung"></textarea>
+                    <input id="ratingImage" type="file" accept="image/*">
+
+                    <div class="rating-actions">
+                        <button id="createRatingButton" type="button">
+                            Bewertung speichern
+                        </button>
+                        <button id="cancelEditButton" class="hidden" type="button">
+                            Bearbeiten abbrechen
+                        </button>
+                    </div>
+
+                    <small id="ratingMessage"></small>
+                </div>
                 <div id="ratingsList">
                     <p>Noch keine Kneipe ausgewaehlt.</p>
                 </div>
