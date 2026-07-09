@@ -3,17 +3,18 @@
 }
 
 :root {
-    --bg: #f5f7f8;
-    --surface: #ffffff;
-    --surface-soft: #f8faf9;
-    --border: #d9e0dd;
-    --text: #17201b;
-    --muted: #63706a;
-    --accent: #176b5b;
-    --accent-dark: #0e4f42;
-    --danger: #b42318;
-    --danger-soft: #fff1ef;
-    --shadow: 0 10px 28px rgba(20, 35, 30, 0.08);
+    --bg: #f2f0eb;
+    --surface: #fafaf8;
+    --surface-soft: #f5f3ee;
+    --border: #ccc9c0;
+    --text: #1a1a18;
+    --muted: #5a5a52;
+    --accent: #2c5f8a;
+    --accent-dark: #1e4266;
+    --accent-warm: #c0392b;
+    --danger: #c0392b;
+    --danger-soft: #fdecea;
+    --font-body: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 body {
@@ -21,7 +22,8 @@ body {
     min-height: 100vh;
     color: var(--text);
     background: var(--bg);
-    font-family: Arial, sans-serif;
+    font-family: var(--font-body);
+    font-size: 14px;
 }
 
 button,
@@ -32,24 +34,24 @@ textarea {
 }
 
 button {
-    min-height: 36px;
-    padding: 8px 13px;
+    min-height: 34px;
+    padding: 7px 13px;
     color: var(--accent);
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 3px;
     cursor: pointer;
 }
 
 button:hover:not(:disabled) {
     border-color: var(--accent);
-    background: #eef7f4;
+    background: #e8f0f8;
 }
 
 button:disabled {
-    color: #9aa5a0;
+    color: #aaa;
     cursor: not-allowed;
-    background: #eef1ef;
+    background: #eeece8;
 }
 
 input,
@@ -57,17 +59,17 @@ select,
 textarea {
     width: 100%;
     min-width: 0;
-    padding: 10px 11px;
+    padding: 9px 10px;
     color: var(--text);
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 3px;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-    outline: 2px solid rgba(23, 107, 91, 0.18);
+    outline: 2px solid rgba(44, 95, 138, 0.25);
     border-color: var(--accent);
 }
 
@@ -79,33 +81,35 @@ textarea:focus {
     justify-content: space-between;
     align-items: center;
     gap: 24px;
-    padding: 14px 24px;
-    background: rgba(255, 255, 255, 0.92);
-    border-bottom: 1px solid var(--border);
-    backdrop-filter: blur(10px);
+    padding: 12px 20px;
+    background: var(--accent);
+    border-bottom: 2px solid var(--accent-dark);
 }
 
 .app-header h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 20px;
+    font-weight: bold;
     line-height: 1.1;
+    color: white;
+    letter-spacing: 0.5px;
 }
 
 .app-header p {
-    margin: 4px 0 0;
-    color: var(--muted);
-    font-size: 14px;
+    margin: 3px 0 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
 }
 
 .account-area {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 #currentUser {
-    color: var(--muted);
-    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
     white-space: nowrap;
 }
 
@@ -113,7 +117,19 @@ textarea:focus {
 .auth-dialog-actions,
 .rating-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
+}
+
+/* Header buttons: white on blue */
+.app-header button {
+    color: var(--accent);
+    background: white;
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.app-header button:hover:not(:disabled) {
+    background: #e8f0f8;
+    border-color: white;
 }
 
 #loginButton,
@@ -121,7 +137,7 @@ textarea:focus {
 #createRatingButton {
     color: white;
     background: var(--accent);
-    border-color: var(--accent);
+    border-color: var(--accent-dark);
 }
 
 #loginButton:hover:not(:disabled),
@@ -134,7 +150,7 @@ textarea:focus {
 .ratings-table button:last-child {
     color: var(--danger);
     background: var(--danger-soft);
-    border-color: #ffd0cb;
+    border-color: #f1a9a0;
 }
 
 .auth-modal {
@@ -144,18 +160,18 @@ textarea:focus {
     display: grid;
     place-items: center;
     padding: 16px;
-    background: rgba(11, 18, 16, 0.42);
+    background: rgba(0, 0, 0, 0.45);
 }
 
 .auth-dialog {
-    width: min(100%, 440px);
+    width: min(100%, 420px);
     display: grid;
-    gap: 14px;
-    padding: 22px;
+    gap: 12px;
+    padding: 20px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.22);
+    border-radius: 3px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .auth-dialog-header {
@@ -163,16 +179,19 @@ textarea:focus {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
 }
 
 .auth-dialog-header h2 {
     margin: 0;
-    font-size: 20px;
+    font-size: 18px;
+    color: var(--accent);
 }
 
 .auth-fields {
     display: grid;
-    gap: 9px;
+    gap: 8px;
 }
 
 .hidden {
@@ -183,7 +202,7 @@ textarea:focus {
 #ratingMessage {
     min-height: 18px;
     color: var(--accent);
-    font-size: 13px;
+    font-size: 12px;
 }
 
 #authMessage.error,
@@ -194,8 +213,8 @@ textarea:focus {
 .app-layout {
     display: grid;
     grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.85fr);
-    gap: 18px;
-    padding: 18px;
+    gap: 14px;
+    padding: 14px;
 }
 
 .content-section,
@@ -203,12 +222,11 @@ textarea:focus {
     min-width: 0;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    box-shadow: var(--shadow);
+    border-radius: 3px;
 }
 
 .map-section {
-    padding: 14px;
+    padding: 12px;
 }
 
 .content-section {
@@ -220,101 +238,108 @@ textarea:focus {
 .content-section h2,
 .rating-form h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .map-section h2 {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    color: var(--accent);
 }
 
 #map {
     width: 100%;
-    height: calc(100vh - 180px);
+    height: calc(100vh - 175px);
     min-height: 400px;
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 2px;
 }
 
 .w3-bar {
     display: flex;
-    gap: 6px;
-    padding: 12px;
-    background: var(--surface-soft);
-    border-bottom: 1px solid var(--border);
+    gap: 4px;
+    padding: 10px;
+    background: #e8e4dc;
+    border-bottom: 2px solid var(--border);
 }
 
 .tab-button {
     flex: 1;
     color: var(--muted);
     background: transparent;
-    border-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    font-weight: bold;
 }
 
 .tab-button.active {
     color: white;
-    background: var(--accent);
-    border-color: var(--accent);
+    background: var(--accent-warm);
+    border-color: #a93226;
+}
+
+.tab-button:hover:not(.active) {
+    background: #d8d4cc;
+    border-color: var(--border);
 }
 
 .tab-content {
     display: none;
-    padding: 16px;
+    padding: 14px;
 }
 
 .tab-content.active {
     display: block;
 }
 
+#poiName {
+    margin: 0 0 10px;
+    padding: 6px 0 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+}
+
 #poiDetails {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
-    margin: 8px 0;
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: disc;
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.8;
 }
 
-#poiDetails div {
-    display: grid;
-    grid-template-columns: 125px minmax(0, 1fr);
-    gap: 8px;
-    padding: 5px 0;
-    border-bottom: 1px solid #edf1ef;
+#poiDetails li {
+    color: var(--text);
+    overflow-wrap: anywhere;
 }
 
-#poiDetails dt {
+#poiDetails li strong {
     color: var(--muted);
-    font-weight: 700;
-    overflow-wrap: anywhere;
 }
 
-#poiDetails dd {
-    margin: 0;
-    overflow-wrap: anywhere;
-}
-
-#poiDetails .opening-hours-detail {
-    align-items: start;
-}
-
-#poiDetails .opening-hours-value {
+.opening-hours-value {
     overflow-x: auto;
+    margin-top: 2px;
 }
 
 .opening-hours-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .opening-hours-table td {
-    padding: 3px 6px 3px 0;
-    border-bottom: 1px solid #edf1ef;
+    padding: 2px 6px 2px 0;
+    border-bottom: 1px solid #ddd9d0;
     vertical-align: top;
 }
 
 .opening-hours-table td:first-child {
     width: 90px;
     color: var(--muted);
-    font-weight: 700;
+    font-weight: bold;
     white-space: nowrap;
 }
 
@@ -324,52 +349,84 @@ textarea:focus {
 
 .rating-form {
     display: grid;
-    gap: 10px;
-    margin: 18px 0;
-    padding: 14px;
+    gap: 9px;
+    margin: 16px 0 0;
+    padding: 12px;
     background: var(--surface-soft);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 3px;
 }
 
 .rating-form textarea {
-    min-height: 96px;
+    min-height: 90px;
     resize: vertical;
+}
+
+.ratings-overview {
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+
+.ratings-overview h3 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--accent);
 }
 
 .ratings-table {
     width: 100%;
-    margin-top: 12px;
+    margin-top: 8px;
     border-collapse: collapse;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .ratings-table th,
 .ratings-table td {
-    padding: 10px;
+    padding: 8px 10px;
     text-align: left;
     vertical-align: top;
     border-bottom: 1px solid var(--border);
 }
 
 .ratings-table th {
-    color: var(--muted);
-    background: var(--surface-soft);
+    background: #e8e4dc;
+    color: var(--text);
+    font-weight: bold;
     font-size: 12px;
-    text-transform: uppercase;
+    border-bottom: 2px solid var(--border);
+}
+
+.stars-cell {
+    white-space: nowrap;
+}
+
+.star-full {
+    color: #2c5f8a;
+}
+
+.star-empty {
+    color: #bbb;
+}
+
+.date-cell {
+    color: var(--muted);
+    white-space: nowrap;
+    font-size: 12px;
 }
 
 .rating-image {
-    width: 80px;
-    height: 80px;
+    width: 72px;
+    height: 72px;
     object-fit: cover;
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 2px;
 }
 
 .ratings-table button {
-    margin-right: 6px;
-    margin-bottom: 4px;
+    margin-right: 4px;
+    margin-bottom: 3px;
 }
 
 @media (max-width: 750px) {
@@ -390,19 +447,14 @@ textarea:focus {
 
     #map {
         height: 55vh;
-        min-height: 360px;
+        min-height: 340px;
     }
 }
 
 @media (max-width: 560px) {
     .app-header,
     .app-layout {
-        padding: 12px;
-    }
-
-    #poiDetails div {
-        grid-template-columns: 1fr;
-        gap: 3px;
+        padding: 10px;
     }
 
     .rating-actions {

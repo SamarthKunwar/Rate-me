@@ -4,27 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rate me</title>
+    <title>RateMe</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="css/style.css?v=20260702-3">
+    <link rel="stylesheet" href="css/style.css?v=20260709-2">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/app.js?v=20260702-3" defer></script>
+    <script src="js/app.js?v=20260709-2" defer></script>
 </head>
 
 <body>
     <header class="app-header">
         <div>
             <h1>RateMe</h1>
-            <p>Bewerte Kneipen in und um Zweibruecken</p>
+            <p>Bewerte Restaurants, Cafés und Kneipen in und um Zweibrücken</p>
         </div>
         <div class="account-area">
             <span id="currentUser">Nicht angemeldet</span>
             <div class="auth-buttons">
-                <button id="loginButton" type="button">Login</button>
+                <button id="loginButton" type="button">Anmelden</button>
                 <button id="registerButton" type="button">Registrieren</button>
-                <button id="logoutButton" type="button">Logout</button>
-                <button id="deleteUserButton" type="button">Account loeschen</button>
+                <button id="logoutButton" type="button">Abmelden</button>
+                <button id="deleteUserButton" type="button">Account löschen</button>
             </div>
         </div>
     </header>
@@ -32,8 +32,8 @@
     <div id="authModal" class="auth-modal hidden">
         <div class="auth-dialog">
             <div class="auth-dialog-header">
-                <h2 id="authTitle">Login</h2>
-                <button id="closeAuthButton" type="button">Schliessen</button>
+                <h2 id="authTitle">Anmelden</h2>
+                <button id="closeAuthButton" type="button">Schließen</button>
             </div>
             <div id="loginFields" class="auth-fields">
                 <input id="authUsername" type="text" placeholder="Benutzername">
@@ -43,13 +43,13 @@
                 <input id="authEmail" type="email" placeholder="E-Mail">
                 <input id="authFirstname" type="text" placeholder="Vorname">
                 <input id="authLastname" type="text" placeholder="Nachname">
-                <input id="authStreet" type="text" placeholder="Strasse">
+                <input id="authStreet" type="text" placeholder="Straße">
                 <input id="authStreetNr" type="text" placeholder="Nr.">
                 <input id="authZip" type="text" placeholder="PLZ">
                 <input id="authCity" type="text" placeholder="Ort">
             </div>
             <div class="auth-dialog-actions">
-                <button id="submitAuthButton" type="button">Login</button>
+                <button id="submitAuthButton" type="button">Anmelden</button>
             </div>
             <small id="authMessage"></small>
         </div>
@@ -66,13 +66,19 @@
                 <button class="tab-button" data-tab="myRatingsTab">Meine Bewertungen</button>
             </div>
             <section id="ratingsTab" class="tab-content active">
-                <h2 id="poiName">Bitte Kneipe auswaehlen</h2>
+                <h2 id="poiName">Bitte Gastronomie auswählen</h2>
                 <dl id="poiDetails"></dl>
+                <div class="ratings-overview">
+                    <h3>Bewertungen</h3>
+                    <div id="ratingsList">
+                        <p>Noch keine Gastronomie ausgewählt.</p>
+                    </div>
+                </div>
                 <div id="ratingForm" class="rating-form">
                     <h3>Bewertung schreiben</h3>
 
                     <select id="ratingGrade">
-                        <option value="" selected>Sterne auswaehlen</option>
+                        <option value="" selected>Sterne auswählen</option>
                         <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
                         <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734;</option>
                         <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734;</option>
@@ -93,9 +99,6 @@
                     </div>
 
                     <small id="ratingMessage"></small>
-                </div>
-                <div id="ratingsList">
-                    <p>Noch keine Kneipe ausgewaehlt.</p>
                 </div>
             </section>
 

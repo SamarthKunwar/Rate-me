@@ -116,8 +116,8 @@ function openAuthModal(mode) {
         submitAuthButton.textContent = "Registrieren";
         registerFields.classList.remove("hidden");
     } else {
-        authTitle.textContent = "Login";
-        submitAuthButton.textContent = "Login";
+        authTitle.textContent = "Anmelden";
+        submitAuthButton.textContent = "Anmelden";
         registerFields.classList.add("hidden");
     }
 
@@ -166,10 +166,10 @@ async function loginUser() {
 
         const loginResponse = await response.json();
         saveAuthentication(loginResponse);
-        setAuthMessage("Login erfolgreich.");
+        setAuthMessage("Anmeldung erfolgreich.");
     } catch (error) {
         console.error(error);
-        setAuthMessage("Login fehlgeschlagen.", true);
+        setAuthMessage("Anmeldung fehlgeschlagen.", true);
     }
 }
 
@@ -233,10 +233,10 @@ async function logoutUser() {
         }
 
         clearAuthentication();
-        setAuthMessage("Logout erfolgreich.");
+        setAuthMessage("Abmeldung erfolgreich.");
     } catch (error) {
         console.error(error);
-        setAuthMessage("Logout fehlgeschlagen.", true);
+        setAuthMessage("Abmeldung fehlgeschlagen.", true);
     }
 }
 
@@ -245,7 +245,7 @@ async function deleteCurrentUser() {
         return;
     }
 
-    const shouldDelete = window.confirm("Account wirklich loeschen?");
+    const shouldDelete = window.confirm("Account wirklich löschen?");
 
     if (!shouldDelete) {
         return;
@@ -264,10 +264,10 @@ async function deleteCurrentUser() {
         }
 
         clearAuthentication();
-        setAuthMessage("Account geloescht.");
+        setAuthMessage("Account gelöscht.");
     } catch (error) {
         console.error(error);
-        setAuthMessage("Account konnte nicht geloescht werden.", true);
+        setAuthMessage("Account konnte nicht gelöscht werden.", true);
     }
 }
 
@@ -307,12 +307,12 @@ async function loadRatingsForPoi(poiId) {
 
 async function createRating() {
     if (!sessionToken) {
-        setRatingMessage("Bitte zuerst einloggen.", true);
+        setRatingMessage("Bitte zuerst anmelden.", true);
         return;
     }
 
     if (!selectedPoiId) {
-        setRatingMessage("Bitte zuerst eine Kneipe auswaehlen.", true);
+        setRatingMessage("Bitte zuerst eine Gastronomie auswählen.", true);
         return;
     }
 
@@ -321,7 +321,7 @@ async function createRating() {
     const imageFile = document.getElementById("ratingImage").files[0];
 
     if (grade < 1 || grade > 5) {
-        setRatingMessage("Bitte Sterne auswaehlen.", true);
+        setRatingMessage("Bitte Sterne auswählen.", true);
         return;
     }
 
@@ -414,7 +414,7 @@ function showRatings(ratings) {
 
     const tableHead = document.createElement("thead");
     const headRow = document.createElement("tr");
-    const headers = ["Benutzer", "Sterne", "Bewertung", "Datum", "Bild"];
+    const headers = ["Datum", "Name", "Kommentar", "Bewertung", "Bild"];
 
     headers.forEach(headerText => {
         const headerCell = document.createElement("th");
@@ -430,21 +430,23 @@ function showRatings(ratings) {
     ratings.forEach(rating => {
         const row = document.createElement("tr");
 
+        const dateCell = document.createElement("td");
+        dateCell.textContent = formatDateTime(rating.createdAt);
+        dateCell.classList.add("date-cell");
+        row.appendChild(dateCell);
+
         const usernameCell = document.createElement("td");
         usernameCell.textContent = rating.username;
         row.appendChild(usernameCell);
-
-        const gradeCell = document.createElement("td");
-        gradeCell.textContent = rating.grade + "/5";
-        row.appendChild(gradeCell);
 
         const textCell = document.createElement("td");
         textCell.textContent = rating.text;
         row.appendChild(textCell);
 
-        const dateCell = document.createElement("td");
-        dateCell.textContent = rating.createdAt || "";
-        row.appendChild(dateCell);
+        const gradeCell = document.createElement("td");
+        gradeCell.innerHTML = formatStars(rating.grade);
+        gradeCell.classList.add("stars-cell");
+        row.appendChild(gradeCell);
 
         const imageCell = document.createElement("td");
 
@@ -480,7 +482,7 @@ function showMyRatings(ratings) {
 
     const tableHead = document.createElement("thead");
     const headRow = document.createElement("tr");
-    const headers = ["Kneipe", "Sterne", "Bewertung", "Datum", "Bild", "Aktionen"];
+    const headers = ["Datum", "Ort", "Kommentar", "Bewertung", "Bild", "Aktionen"];
 
     headers.forEach(headerText => {
         const headerCell = document.createElement("th");
@@ -496,21 +498,23 @@ function showMyRatings(ratings) {
     ratings.forEach(rating => {
         const row = document.createElement("tr");
 
+        const dateCell = document.createElement("td");
+        dateCell.textContent = formatDateTime(rating.createdAt);
+        dateCell.classList.add("date-cell");
+        row.appendChild(dateCell);
+
         const poiCell = document.createElement("td");
         poiCell.textContent = rating.poiName || "";
         row.appendChild(poiCell);
-
-        const gradeCell = document.createElement("td");
-        gradeCell.textContent = rating.grade + "/5";
-        row.appendChild(gradeCell);
 
         const textCell = document.createElement("td");
         textCell.textContent = rating.text;
         row.appendChild(textCell);
 
-        const dateCell = document.createElement("td");
-        dateCell.textContent = rating.createdAt || "";
-        row.appendChild(dateCell);
+        const gradeCell = document.createElement("td");
+        gradeCell.innerHTML = formatStars(rating.grade);
+        gradeCell.classList.add("stars-cell");
+        row.appendChild(gradeCell);
 
         const imageCell = document.createElement("td");
 
@@ -538,7 +542,7 @@ function showMyRatings(ratings) {
 
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
-        deleteButton.textContent = "Loeschen";
+        deleteButton.textContent = "Löschen";
         deleteButton.addEventListener("click", () => {
             deleteRating(rating.id);
         });
@@ -565,7 +569,7 @@ function startEditRating(rating) {
     document.getElementById("ratingImage").value = "";
     document.getElementById("createRatingButton").textContent = "Bewertung aktualisieren";
     document.getElementById("cancelEditButton").classList.remove("hidden");
-    setRatingMessage("Du bearbeitest deine Bewertung fuer " + (rating.poiName || "diese Kneipe") + ".");
+    setRatingMessage("Du bearbeitest deine Bewertung für " + (rating.poiName || "diesen Ort") + ".");
 }
 
 async function deleteRating(ratingId) {
@@ -574,7 +578,7 @@ async function deleteRating(ratingId) {
         return;
     }
 
-    const shouldDelete = window.confirm("Bewertung wirklich loeschen?");
+    const shouldDelete = window.confirm("Bewertung wirklich löschen?");
 
     if (!shouldDelete) {
         return;
@@ -599,7 +603,7 @@ async function deleteRating(ratingId) {
         }
     } catch (error) {
         console.error(error);
-        setMyRatingsMessage("Bewertung konnte nicht geloescht werden.");
+        setMyRatingsMessage("Bewertung konnte nicht gelöscht werden.");
     }
 }
 
@@ -607,19 +611,19 @@ function showPoiDetails(poi) {
     const poiName = document.getElementById("poiName");
     const poiDetails = document.getElementById("poiDetails");
 
-    poiName.textContent = poi.name || "Unbenannte Kneipe";
+    poiName.textContent = poi.name || "Unbenannter Ort";
     poiDetails.innerHTML = "";
     const details = [
         ["Art", poi.amenity],
-        ["Kueche", poi.cuisine],
+        ["Küche", poi.cuisine],
         ["Telefon", poi.phone],
         ["Webseite", poi.website],
-        ["Oeffnungszeiten", formatOpeningHours(poi.openingHours)],
+        ["Öffnungszeiten", formatOpeningHours(poi.openingHours)],
         ["Rollstuhl", poi.wheelchair],
         ["Takeaway", poi.takeaway],
         ["Lieferung", poi.delivery],
         ["Rauchen", poi.smoking],
-        ["Aussenbereich", poi.outdoorSeating],
+        ["Außenbereich", poi.outdoorSeating],
         ["Reservierung", poi.reservation],
         ["Adresse", formatAddress(poi)]
     ];
@@ -634,7 +638,7 @@ function showPoiDetails(poi) {
 
         term.textContent = label;
 
-        if (label === "Oeffnungszeiten") {
+        if (label === "Öffnungszeiten") {
             detailRow.classList.add("opening-hours-detail");
             description.classList.add("opening-hours-value");
             description.appendChild(createOpeningHoursTable(value));
@@ -733,12 +737,42 @@ function renderPoiMarkers() {
         }
         const marker = L.marker([poi.lat, poi.lon]);
         marker.addTo(map);
-        marker.bindPopup(poi.name || "Unbenannte Kneipe");
+        marker.bindPopup(poi.name || "Unbenannter Ort");
         marker.on("click", () => {
             selectPoi(poi.id);
         });
         poiMarkers.push(marker);
     });
+}
+
+function formatStars(grade) {
+    const numericGrade = Number(grade);
+
+    if (numericGrade < 1 || numericGrade > 5) {
+        return "-";
+    }
+
+    const fullStar = String.fromCharCode(9733);
+    const emptyStar = String.fromCharCode(9734);
+
+    return `<span class="star-full">${fullStar.repeat(numericGrade)}</span><span class="star-empty">${emptyStar.repeat(5 - numericGrade)}</span>`;
+}
+
+function formatDateTime(value) {
+    if (!value) {
+        return "";
+    }
+    const date = new Date(value);
+    if (isNaN(date.getTime())) {
+        return value;
+    }
+    return new Intl.DateTimeFormat("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+    }).format(date);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
