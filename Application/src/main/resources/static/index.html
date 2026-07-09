@@ -7,24 +7,32 @@
     <title>RateMe</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="css/style.css?v=20260709-3">
+    <link rel="stylesheet" href="css/style.css?v=20260709-4">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/app.js?v=20260709-3" defer></script>
+    <script src="js/app.js?v=20260709-4" defer></script>
 </head>
 
 <body>
     <header class="app-header">
-        <div>
-            <h1>RateMe</h1>
-            <p>Bewerte Restaurants, Cafés und Kneipen in und um Zweibrücken</p>
+        <div class="brand">
+            <svg class="brand-mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+                <path d="M9 5h13v5a7.5 7.5 0 0 1-7.5 7.5A7.5 7.5 0 0 1 7 10V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M22 8h2.5a2.8 2.8 0 0 1 0 5.6H22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="6.5" y1="26.5" x2="17.5" y2="26.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <line x1="12" y1="17.5" x2="12" y2="26.5" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <div>
+                <h1>RateMe</h1>
+                <p>Bewerte Restaurants, Cafés und Kneipen in und um Zweibrücken</p>
+            </div>
         </div>
         <div class="account-area">
             <span id="currentUser">Nicht angemeldet</span>
             <div class="auth-buttons">
-                <button id="loginButton" type="button"><span class="button-icon" aria-hidden="true">→</span>Anmelden</button>
-                <button id="registerButton" type="button"><span class="button-icon" aria-hidden="true">＋</span>Registrieren</button>
-                <button id="logoutButton" type="button"><span class="button-icon" aria-hidden="true">←</span>Abmelden</button>
-                <button id="deleteUserButton" type="button"><span class="button-icon" aria-hidden="true">×</span>Account löschen</button>
+                <button id="loginButton" type="button">Anmelden</button>
+                <button id="registerButton" type="button">Registrieren</button>
+                <button id="logoutButton" type="button">Abmelden</button>
+                <button id="deleteUserButton" type="button">Account löschen</button>
             </div>
         </div>
     </header>
@@ -33,7 +41,7 @@
         <div class="auth-dialog">
             <div class="auth-dialog-header">
                 <h2 id="authTitle">Anmelden</h2>
-                <button id="closeAuthButton" type="button"><span class="button-icon" aria-hidden="true">×</span>Schließen</button>
+                <button id="closeAuthButton" type="button">Schließen</button>
             </div>
             <div id="loginFields" class="auth-fields">
                 <input id="authUsername" type="text" placeholder="Benutzername">
@@ -62,8 +70,8 @@
         </section>
         <section class="content-section">
             <div class="w3-bar">
-                <button class="tab-button active" data-tab="ratingsTab"><span class="button-icon" aria-hidden="true">★</span>Bewertungen</button>
-                <button class="tab-button" data-tab="myRatingsTab"><span class="button-icon" aria-hidden="true">●</span>Meine Bewertungen</button>
+                <button class="tab-button active" data-tab="ratingsTab">Bewertungen</button>
+                <button class="tab-button" data-tab="myRatingsTab">Meine Bewertungen</button>
             </div>
             <section id="ratingsTab" class="tab-content active">
                 <h2 id="poiName">Bitte Gastronomie auswählen</h2>
@@ -90,12 +98,8 @@
                     <input id="ratingImage" type="file" accept="image/*">
 
                     <div class="rating-actions">
-                        <button id="createRatingButton" type="button">
-                            <span class="button-icon" aria-hidden="true">✓</span>Bewertung speichern
-                        </button>
-                        <button id="cancelEditButton" class="hidden" type="button">
-                            <span class="button-icon" aria-hidden="true">↺</span>Bearbeiten abbrechen
-                        </button>
+                        <button id="createRatingButton" type="button">Bewertung speichern</button>
+                        <button id="cancelEditButton" class="hidden" type="button">Bearbeiten abbrechen</button>
                     </div>
 
                     <small id="ratingMessage"></small>

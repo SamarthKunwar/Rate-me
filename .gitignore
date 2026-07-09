@@ -1,5 +1,5 @@
-backend/target/
-backend/.mvn/wrapper/maven-wrapper.jar
+Application/target/
+Application/.mvn/wrapper/maven-wrapper.jar
 lecture_extracts/
 Projektarbeit_WS_2026_extracted.txt
 .DS_Store
@@ -9,6 +9,7 @@ __MACOSX/
 ### IDEs ###
 .idea/
 .vscode/
+.claude/
 *.iws
 *.iml
 *.ipr

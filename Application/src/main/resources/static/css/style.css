@@ -3,17 +3,19 @@
 }
 
 :root {
-    --bg: #f2f0eb;
-    --surface: #fafaf8;
-    --surface-soft: #f5f3ee;
-    --border: #ccc9c0;
-    --text: #1a1a18;
-    --muted: #5a5a52;
-    --accent: #2c5f8a;
-    --accent-dark: #1e4266;
-    --accent-warm: #c0392b;
-    --danger: #c0392b;
-    --danger-soft: #fdecea;
+    --bg: #f3ede1;
+    --surface: #fffdf8;
+    --surface-soft: #f8f0e2;
+    --border: #ddceb4;
+    --text: #2a2117;
+    --muted: #7d6b52;
+    --accent: #8a4b2f;
+    --accent-dark: #6b3820;
+    --accent-soft: #f3e4d2;
+    --tab-active: #b8720f;
+    --tab-active-dark: #8f5a0c;
+    --danger: #b33a2e;
+    --danger-soft: #fbeae6;
     --font-body: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -45,15 +47,12 @@ button {
     border: 1px solid var(--border);
     border-radius: 3px;
     cursor: pointer;
-}
-
-.button-icon {
-    line-height: 1;
+    transition: background-color .15s ease, border-color .15s ease, color .15s ease;
 }
 
 button:hover:not(:disabled) {
     border-color: var(--accent);
-    background: #e8f0f8;
+    background: var(--accent-soft);
 }
 
 button:disabled {
@@ -72,6 +71,7 @@ textarea {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 3px;
+    transition: border-color .15s ease, outline-color .15s ease;
 }
 
 input[type="hidden"] {
@@ -81,7 +81,27 @@ input[type="hidden"] {
 input:focus,
 select:focus,
 textarea:focus {
-    outline: 2px solid rgba(44, 95, 138, 0.25);
+    outline: 2px solid rgba(138, 75, 47, 0.25);
+    border-color: var(--accent);
+}
+
+input[type="file"] {
+    padding: 5px;
+}
+
+input[type="file"]::file-selector-button {
+    margin-right: 10px;
+    padding: 6px 12px;
+    color: var(--accent);
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: var(--accent-soft);
     border-color: var(--accent);
 }
 
@@ -96,6 +116,17 @@ textarea:focus {
     padding: 12px 20px;
     background: var(--accent);
     border-bottom: 2px solid var(--accent-dark);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-mark {
+    flex-shrink: 0;
+    color: white;
 }
 
 .app-header h1 {
@@ -140,7 +171,7 @@ textarea:focus {
 }
 
 .app-header button:hover:not(:disabled) {
-    background: #e8f0f8;
+    background: var(--accent-soft);
     border-color: white;
 }
 
@@ -286,8 +317,8 @@ textarea:focus {
 
 .tab-button.active {
     color: white;
-    background: var(--accent-warm);
-    border-color: #a93226;
+    background: var(--tab-active);
+    border-color: var(--tab-active-dark);
 }
 
 .tab-button:hover:not(.active) {

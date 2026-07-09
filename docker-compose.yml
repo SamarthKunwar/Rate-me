@@ -20,7 +20,7 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ./Application
     container_name: rateme-backend
     restart: on-failure
     ports:
@@ -34,18 +34,6 @@ services:
       - SPRING_DATASOURCE_PASSWORD=
     volumes:
       - ./logs:/logs
-    networks:
-      - rateme-network
-
-  frontend:
-    build:
-      context: ./frontend
-    container_name: rateme-frontend
-    restart: on-failure
-    ports:
-      - "8081:80"
-    depends_on:
-      - backend
     networks:
       - rateme-network
 

@@ -373,7 +373,7 @@ function resetRatingForm() {
     setSelectedStars(0);
     document.getElementById("ratingText").value = "";
     document.getElementById("ratingImage").value = "";
-    document.getElementById("createRatingButton").innerHTML = '<span class="button-icon" aria-hidden="true">✓</span>Bewertung speichern';
+    document.getElementById("createRatingButton").textContent = "Bewertung speichern";
     document.getElementById("cancelEditButton").classList.add("hidden");
 }
 
@@ -535,7 +535,7 @@ function showMyRatings(ratings) {
 
         const editButton = document.createElement("button");
         editButton.type = "button";
-        editButton.innerHTML = '<span class="button-icon" aria-hidden="true">✎</span>Bearbeiten';
+        editButton.textContent = "Bearbeiten";
         editButton.addEventListener("click", () => {
             startEditRating(rating);
         });
@@ -543,7 +543,7 @@ function showMyRatings(ratings) {
 
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
-        deleteButton.innerHTML = '<span class="button-icon" aria-hidden="true">×</span>Löschen';
+        deleteButton.textContent = "Löschen";
         deleteButton.addEventListener("click", () => {
             deleteRating(rating.id);
         });
@@ -569,7 +569,7 @@ function startEditRating(rating) {
     setSelectedStars(rating.grade);
     document.getElementById("ratingText").value = rating.text || "";
     document.getElementById("ratingImage").value = "";
-    document.getElementById("createRatingButton").innerHTML = '<span class="button-icon" aria-hidden="true">✓</span>Bewertung aktualisieren';
+    document.getElementById("createRatingButton").textContent = "Bewertung aktualisieren";
     document.getElementById("cancelEditButton").classList.remove("hidden");
     setRatingMessage("Du bearbeitest deine Bewertung für " + (rating.poiName || "diesen Ort") + ".");
 }
