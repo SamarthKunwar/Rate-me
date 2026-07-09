@@ -34,6 +34,10 @@ textarea {
 }
 
 button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     min-height: 34px;
     padding: 7px 13px;
     color: var(--accent);
@@ -41,6 +45,10 @@ button {
     border: 1px solid var(--border);
     border-radius: 3px;
     cursor: pointer;
+}
+
+.button-icon {
+    line-height: 1;
 }
 
 button:hover:not(:disabled) {
@@ -64,6 +72,10 @@ textarea {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 3px;
+}
+
+input[type="hidden"] {
+    display: none;
 }
 
 input:focus,
@@ -120,7 +132,7 @@ textarea:focus {
     gap: 6px;
 }
 
-/* Header buttons: white on blue */
+
 .app-header button {
     color: var(--accent);
     background: white;
@@ -362,6 +374,35 @@ textarea:focus {
     resize: vertical;
 }
 
+.rating-stars {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+}
+
+.star-button {
+    min-width: 34px;
+    min-height: 34px;
+    padding: 0;
+    color: #b8b1a4;
+    background: transparent;
+    border: 0;
+    border-radius: 2px;
+    font-size: 28px;
+    line-height: 1;
+}
+
+.star-button:hover,
+.star-button.active {
+    color: #d6a21d;
+    background: transparent;
+}
+
+.star-button:focus {
+    outline: 2px solid rgba(214, 162, 29, 0.35);
+    outline-offset: 2px;
+}
+
 .ratings-overview {
     margin-top: 14px;
     padding-top: 10px;
@@ -403,7 +444,7 @@ textarea:focus {
 }
 
 .star-full {
-    color: #2c5f8a;
+    color: #d6a21d;
 }
 
 .star-empty {

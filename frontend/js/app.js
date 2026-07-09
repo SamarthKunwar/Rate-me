@@ -370,9 +370,10 @@ async function createRating() {
 function resetRatingForm() {
     editingRatingId = null;
     document.getElementById("ratingGrade").value = "";
+    setSelectedStars(0);
     document.getElementById("ratingText").value = "";
     document.getElementById("ratingImage").value = "";
-    document.getElementById("createRatingButton").textContent = "Bewertung speichern";
+    document.getElementById("createRatingButton").innerHTML = '<span class="button-icon" aria-hidden="true">✓</span>Bewertung speichern';
     document.getElementById("cancelEditButton").classList.add("hidden");
 }
 
@@ -534,7 +535,7 @@ function showMyRatings(ratings) {
 
         const editButton = document.createElement("button");
         editButton.type = "button";
-        editButton.textContent = "Bearbeiten";
+        editButton.innerHTML = '<span class="button-icon" aria-hidden="true">✎</span>Bearbeiten';
         editButton.addEventListener("click", () => {
             startEditRating(rating);
         });
@@ -542,7 +543,7 @@ function showMyRatings(ratings) {
 
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
-        deleteButton.textContent = "Löschen";
+        deleteButton.innerHTML = '<span class="button-icon" aria-hidden="true">×</span>Löschen';
         deleteButton.addEventListener("click", () => {
             deleteRating(rating.id);
         });
@@ -565,9 +566,10 @@ function startEditRating(rating) {
     loadRatingsForPoi(rating.poiId);
 
     document.getElementById("ratingGrade").value = String(rating.grade);
+    setSelectedStars(rating.grade);
     document.getElementById("ratingText").value = rating.text || "";
     document.getElementById("ratingImage").value = "";
-    document.getElementById("createRatingButton").textContent = "Bewertung aktualisieren";
+    document.getElementById("createRatingButton").innerHTML = '<span class="button-icon" aria-hidden="true">✓</span>Bewertung aktualisieren';
     document.getElementById("cancelEditButton").classList.remove("hidden");
     setRatingMessage("Du bearbeitest deine Bewertung für " + (rating.poiName || "diesen Ort") + ".");
 }
@@ -775,9 +777,42 @@ function formatDateTime(value) {
     }).format(date);
 }
 
+function initStarRating() {
+    const starButtons = document.querySelectorAll(".star-button");
+
+    starButtons.forEach(button => {
+        const grade = Number(button.dataset.grade);
+
+        button.addEventListener("click", () => {
+            document.getElementById("ratingGrade").value = String(grade);
+            setSelectedStars(grade);
+        });
+
+        button.addEventListener("mouseenter", () => {
+            setSelectedStars(grade);
+        });
+    });
+
+    const ratingStars = document.querySelector(".rating-stars");
+    ratingStars.addEventListener("mouseleave", () => {
+        const selectedGrade = Number(document.getElementById("ratingGrade").value);
+        setSelectedStars(selectedGrade);
+    });
+}
+
+function setSelectedStars(grade) {
+    const numericGrade = Number(grade);
+
+    document.querySelectorAll(".star-button").forEach(button => {
+        const buttonGrade = Number(button.dataset.grade);
+        button.classList.toggle("active", buttonGrade <= numericGrade);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     initMap();
     initTabs();
+    initStarRating();
     updateAuthDisplay();
     document.getElementById("loginButton").addEventListener("click", () => openAuthModal("login"));
     document.getElementById("registerButton").addEventListener("click", () => openAuthModal("register"));

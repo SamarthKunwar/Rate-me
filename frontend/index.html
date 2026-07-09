@@ -7,9 +7,9 @@
     <title>RateMe</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="css/style.css?v=20260709-2">
+    <link rel="stylesheet" href="css/style.css?v=20260709-3">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/app.js?v=20260709-2" defer></script>
+    <script src="js/app.js?v=20260709-3" defer></script>
 </head>
 
 <body>
@@ -21,10 +21,10 @@
         <div class="account-area">
             <span id="currentUser">Nicht angemeldet</span>
             <div class="auth-buttons">
-                <button id="loginButton" type="button">Anmelden</button>
-                <button id="registerButton" type="button">Registrieren</button>
-                <button id="logoutButton" type="button">Abmelden</button>
-                <button id="deleteUserButton" type="button">Account löschen</button>
+                <button id="loginButton" type="button"><span class="button-icon" aria-hidden="true">→</span>Anmelden</button>
+                <button id="registerButton" type="button"><span class="button-icon" aria-hidden="true">＋</span>Registrieren</button>
+                <button id="logoutButton" type="button"><span class="button-icon" aria-hidden="true">←</span>Abmelden</button>
+                <button id="deleteUserButton" type="button"><span class="button-icon" aria-hidden="true">×</span>Account löschen</button>
             </div>
         </div>
     </header>
@@ -33,7 +33,7 @@
         <div class="auth-dialog">
             <div class="auth-dialog-header">
                 <h2 id="authTitle">Anmelden</h2>
-                <button id="closeAuthButton" type="button">Schließen</button>
+                <button id="closeAuthButton" type="button"><span class="button-icon" aria-hidden="true">×</span>Schließen</button>
             </div>
             <div id="loginFields" class="auth-fields">
                 <input id="authUsername" type="text" placeholder="Benutzername">
@@ -62,8 +62,8 @@
         </section>
         <section class="content-section">
             <div class="w3-bar">
-                <button class="tab-button active" data-tab="ratingsTab">Bewertungen</button>
-                <button class="tab-button" data-tab="myRatingsTab">Meine Bewertungen</button>
+                <button class="tab-button active" data-tab="ratingsTab"><span class="button-icon" aria-hidden="true">★</span>Bewertungen</button>
+                <button class="tab-button" data-tab="myRatingsTab"><span class="button-icon" aria-hidden="true">●</span>Meine Bewertungen</button>
             </div>
             <section id="ratingsTab" class="tab-content active">
                 <h2 id="poiName">Bitte Gastronomie auswählen</h2>
@@ -77,24 +77,24 @@
                 <div id="ratingForm" class="rating-form">
                     <h3>Bewertung schreiben</h3>
 
-                    <select id="ratingGrade">
-                        <option value="" selected>Sterne auswählen</option>
-                        <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
-                        <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734;</option>
-                        <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734;</option>
-                        <option value="2">&#9733;&#9733;&#9734;&#9734;&#9734;</option>
-                        <option value="1">&#9733;&#9734;&#9734;&#9734;&#9734;</option>
-                    </select>
+                    <input id="ratingGrade" type="hidden" value="">
+                    <div class="rating-stars" aria-label="Sterne auswählen">
+                        <button class="star-button" type="button" data-grade="1" aria-label="1 Stern">★</button>
+                        <button class="star-button" type="button" data-grade="2" aria-label="2 Sterne">★</button>
+                        <button class="star-button" type="button" data-grade="3" aria-label="3 Sterne">★</button>
+                        <button class="star-button" type="button" data-grade="4" aria-label="4 Sterne">★</button>
+                        <button class="star-button" type="button" data-grade="5" aria-label="5 Sterne">★</button>
+                    </div>
 
                     <textarea id="ratingText" placeholder="Deine Bewertung"></textarea>
                     <input id="ratingImage" type="file" accept="image/*">
 
                     <div class="rating-actions">
                         <button id="createRatingButton" type="button">
-                            Bewertung speichern
+                            <span class="button-icon" aria-hidden="true">✓</span>Bewertung speichern
                         </button>
                         <button id="cancelEditButton" class="hidden" type="button">
-                            Bearbeiten abbrechen
+                            <span class="button-icon" aria-hidden="true">↺</span>Bearbeiten abbrechen
                         </button>
                     </div>
 
