@@ -7,24 +7,16 @@
     <title>RateMe</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="css/style.css?v=20260709-4">
+    <link rel="stylesheet" href="css/style.css?v=20260709-7">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/app.js?v=20260709-4" defer></script>
+    <script src="js/app.js?v=20260709-7" defer></script>
 </head>
 
 <body>
     <header class="app-header">
-        <div class="brand">
-            <svg class="brand-mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
-                <path d="M9 5h13v5a7.5 7.5 0 0 1-7.5 7.5A7.5 7.5 0 0 1 7 10V5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                <path d="M22 8h2.5a2.8 2.8 0 0 1 0 5.6H22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <line x1="6.5" y1="26.5" x2="17.5" y2="26.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <line x1="12" y1="17.5" x2="12" y2="26.5" stroke="currentColor" stroke-width="2"/>
-            </svg>
-            <div>
-                <h1>RateMe</h1>
-                <p>Bewerte Restaurants, Cafés und Kneipen in und um Zweibrücken</p>
-            </div>
+        <div>
+            <h1>RateMe</h1>
+            <p>Bewerte Restaurants, Cafés und Kneipen in und um Zweibrücken</p>
         </div>
         <div class="account-area">
             <span id="currentUser">Nicht angemeldet</span>
@@ -63,7 +55,7 @@
         </div>
     </div>
 
-    <main class="app-layout">
+    <main id="appLayout" class="app-layout hidden">
         <section class="map-section">
             <h2>Karte</h2>
             <div id="map"></div>

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import de.hskl.rateme.auth.AuthTokenManager;
 import de.hskl.rateme.dao.PoiDao;
 import de.hskl.rateme.dto.PoiDetailDtoOut;
 import de.hskl.rateme.dto.PoiOverviewDtoOut;
@@ -15,12 +16,16 @@ import de.hskl.rateme.entity.Poi;
 public class PoiService {
 
     private final PoiDao poiDao;
+    private final AuthTokenManager authTokenManager;
 
-    public PoiService(PoiDao poiDao) {
+    public PoiService(PoiDao poiDao, AuthTokenManager authTokenManager) {
         this.poiDao = poiDao;
+        this.authTokenManager = authTokenManager;
     }
 
-    public List<PoiOverviewDtoOut> findAllPois() {
+    public List<PoiOverviewDtoOut> findAllPois(String token) {
+        authTokenManager.requireValidToken(token);
+
         return poiDao.findAll()
                 .stream()
                 .map(poi -> new PoiOverviewDtoOut(
@@ -32,7 +37,9 @@ public class PoiService {
                 .toList();
     }
 
-    public PoiDetailDtoOut findPoiById(Long id) {
+    public PoiDetailDtoOut findPoiById(Long id, String token) {
+        authTokenManager.requireValidToken(token);
+
         Poi poi = poiDao.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 

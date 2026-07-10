@@ -40,7 +40,9 @@ public class RatingService {
         this.authTokenManager = authTokenManager;
     }
 
-    public List<RatingDtoOut> getRatingsForPoi(Long poiId) {
+    public List<RatingDtoOut> getRatingsForPoi(String token, Long poiId) {
+        authTokenManager.requireValidToken(token);
+
         return ratingDao.findByPoiId(poiId)
                 .stream()
                 .map(this::toRatingDtoOut)

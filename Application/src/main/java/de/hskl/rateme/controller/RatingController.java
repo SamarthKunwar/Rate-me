@@ -38,11 +38,13 @@ public class RatingController {
     }
     @Operation(summary = "Get ratings for one POI")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ratings loaded successfully")
+            @ApiResponse(responseCode = "200", description = "Ratings loaded successfully"),
+            @ApiResponse(responseCode = "401", description = "Invalid token")
     })
     @GetMapping("/poi/{poiId}")
-    public List<RatingDtoOut> getRatingsForPoi(@PathVariable Long poiId) {
-        return ratingService.getRatingsForPoi(poiId);
+    public List<RatingDtoOut> getRatingsForPoi(@RequestHeader("Authorization") String token,
+            @PathVariable Long poiId) {
+        return ratingService.getRatingsForPoi(token, poiId);
     }
 
     @Operation(summary = "Create a rating")

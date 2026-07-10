@@ -72,16 +72,20 @@ function updateAuthDisplay() {
     const currentUserLabel = document.getElementById("currentUser");
     const logoutButton = document.getElementById("logoutButton");
     const deleteUserButton = document.getElementById("deleteUserButton");
+    const appLayout = document.getElementById("appLayout");
 
     if (currentUser) {
         currentUserLabel.textContent = "Angemeldet als " + currentUser.username;
         logoutButton.disabled = false;
         deleteUserButton.disabled = false;
         closeAuthModal();
+        appLayout.classList.remove("hidden");
+        map.invalidateSize();
     } else {
         currentUserLabel.textContent = "Nicht angemeldet";
         logoutButton.disabled = true;
         deleteUserButton.disabled = true;
+        appLayout.classList.add("hidden");
     }
 }
 
@@ -89,6 +93,7 @@ function saveAuthentication(loginResponse) {
     sessionToken = loginResponse.sessionToken;
     currentUser = loginResponse.user;
     updateAuthDisplay();
+    loadPois();
 }
 
 function clearAuthentication() {
@@ -97,6 +102,14 @@ function clearAuthentication() {
     updateAuthDisplay();
     setMyRatingsMessage("Bitte anmelden, um eigene Bewertungen zu sehen.");
     resetRatingForm();
+
+    selectedPoiId = null;
+    pois = [];
+    renderPoiMarkers();
+    document.getElementById("poiName").textContent = "Bitte Gastronomie auswählen";
+    document.getElementById("poiDetails").innerHTML = "";
+    document.getElementById("ratingsList").innerHTML = "<p>Noch keine Gastronomie ausgewählt.</p>";
+    openAuthModal("login");
 }
 
 function openAuthModal(mode) {
@@ -273,7 +286,11 @@ async function deleteCurrentUser() {
 
 async function loadPois() {
     try {
-        const response = await fetch(API_BASE_URL + "/pois");
+        const response = await fetch(API_BASE_URL + "/pois", {
+            headers: {
+                "Authorization": sessionToken
+            }
+        });
 
         if (!response.ok) {
             throw new Error("Could not load POIs");
@@ -294,7 +311,11 @@ function selectPoi(poiId) {
 
 async function loadRatingsForPoi(poiId) {
     try {
-        const response = await fetch(API_BASE_URL + "/ratings/poi/" + poiId);
+        const response = await fetch(API_BASE_URL + "/ratings/poi/" + poiId, {
+            headers: {
+                "Authorization": sessionToken
+            }
+        });
         if (!response.ok) {
             throw new Error("Could not load ratings for POI");
         }
@@ -716,7 +737,11 @@ function formatAddress(poi) {
 
 async function loadPoiDetails(poiId) {
     try {
-        const response = await fetch(API_BASE_URL + "/pois/" + poiId);
+        const response = await fetch(API_BASE_URL + "/pois/" + poiId, {
+            headers: {
+                "Authorization": sessionToken
+            }
+        });
         if (!response.ok) {
             throw new Error("Could not load POI details");
         }
@@ -822,5 +847,5 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("submitAuthButton").addEventListener("click", submitAuthForm);
     document.getElementById("createRatingButton").addEventListener("click", createRating);
     document.getElementById("cancelEditButton").addEventListener("click", resetRatingForm);
-    loadPois();
+    openAuthModal("login");
 });
