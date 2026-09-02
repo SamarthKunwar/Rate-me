@@ -1,0 +1,16 @@
+# Render blueprint: one free Docker web service running the Spring Boot app
+# with its bundled frontend and an in-memory H2 database (the "cloud" profile).
+# No database add-on is needed.
+services:
+  - type: web
+    name: rateme
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Application/Dockerfile
+    dockerContext: ./Application
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: cloud

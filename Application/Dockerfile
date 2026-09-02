@@ -14,6 +14,11 @@ WORKDIR /app
 
 COPY --from=build /app/target/*.jar app.jar
 
+# The public deployment runs the self-contained H2 profile (no MySQL container).
+# Override SPRING_PROFILES_ACTIVE at run time to use a different config.
+ENV SPRING_PROFILES_ACTIVE=cloud
+
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# MaxRAMPercentage keeps the JVM inside small free-tier memory limits (e.g. 512 MB).
+ENTRYPOINT ["sh", "-c", "java -XX:MaxRAMPercentage=75 -jar app.jar"]

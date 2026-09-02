@@ -58,6 +58,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Embedded DB for the free cloud deployment (see application-cloud.properties) -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

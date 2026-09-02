@@ -1,7 +1,8 @@
 let map;
 let pois = [];
 let poiMarkers = [];
-const API_BASE_URL = "http://localhost:8080";
+// Same-origin: the backend serves this page and the REST API from one host.
+const API_BASE_URL = "";
 let selectedPoiId = null;
 let sessionToken = null;
 let currentUser = null;

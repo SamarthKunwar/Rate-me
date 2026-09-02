@@ -6,6 +6,14 @@ Backend: Spring Boot REST API (Java 21, JPA via `EntityManager`, no Spring Data/
 
 Only the database and the REST backend run in Docker containers, as specified. The frontend lives inside the backend's (`Application/`) `src/main/resources/static` folder, so Spring Boot serves it automatically on the same origin as the API — no separate container, port, or CORS workaround needed for normal use.
 
+## Live demo
+
+A public build can be deployed for free on Render / Koyeb / Fly. It runs the
+`cloud` Spring profile, which swaps MySQL for an in-memory H2 database seeded with
+the same POI data (registrations and ratings reset on redeploy). See
+[DEPLOY.md](DEPLOY.md) for step-by-step instructions. Local development with
+`docker compose` is unaffected and keeps using MySQL.
+
 ## Prerequisites
 
 - [Docker](https://www.docker.com/) and Docker Compose (bundled with Docker Desktop)

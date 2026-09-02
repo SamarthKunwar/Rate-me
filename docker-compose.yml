@@ -29,6 +29,8 @@ services:
       db:
         condition: service_healthy
     environment:
+      # Override the image's default "cloud" (H2) profile: locally we use MySQL.
+      - SPRING_PROFILES_ACTIVE=default
       - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/swtp_rateme
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=
