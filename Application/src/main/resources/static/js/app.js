@@ -71,46 +71,59 @@ function setMyRatingsMessage(message) {
 
 function updateAuthDisplay() {
     const currentUserLabel = document.getElementById("currentUser");
+    const loginButton = document.getElementById("loginButton");
+    const registerButton = document.getElementById("registerButton");
     const logoutButton = document.getElementById("logoutButton");
     const deleteUserButton = document.getElementById("deleteUserButton");
-    const appLayout = document.getElementById("appLayout");
 
-    if (currentUser) {
-        currentUserLabel.textContent = "Angemeldet als " + currentUser.username;
-        logoutButton.disabled = false;
-        deleteUserButton.disabled = false;
+    const loggedIn = Boolean(currentUser);
+
+    // Show only the actions that apply to the current state, instead of
+    // always rendering all four buttons with two of them disabled.
+    loginButton.classList.toggle("hidden", loggedIn);
+    registerButton.classList.toggle("hidden", loggedIn);
+    logoutButton.classList.toggle("hidden", !loggedIn);
+    deleteUserButton.classList.toggle("hidden", !loggedIn);
+
+    currentUserLabel.textContent = loggedIn
+        ? "Angemeldet als " + currentUser.username
+        : "Nicht angemeldet";
+
+    if (loggedIn) {
         closeAuthModal();
-        appLayout.classList.remove("hidden");
-        map.invalidateSize();
-    } else {
-        currentUserLabel.textContent = "Nicht angemeldet";
-        logoutButton.disabled = true;
-        deleteUserButton.disabled = true;
-        appLayout.classList.add("hidden");
     }
+
+    updateReviewsAccess();
+}
+
+// The map and place details are public; the reviews list and the rating
+// form are only shown once the visitor is logged in.
+function updateReviewsAccess() {
+    const loggedIn = Boolean(sessionToken);
+    document.getElementById("reviewsLocked").classList.toggle("hidden", loggedIn);
+    document.getElementById("reviewsUnlocked").classList.toggle("hidden", !loggedIn);
 }
 
 function saveAuthentication(loginResponse) {
     sessionToken = loginResponse.sessionToken;
     currentUser = loginResponse.user;
     updateAuthDisplay();
-    loadPois();
+
+    // If a place was already open, load its reviews now that we may see them.
+    if (selectedPoiId) {
+        loadRatingsForPoi(selectedPoiId);
+    }
 }
 
 function clearAuthentication() {
     sessionToken = null;
     currentUser = null;
     updateAuthDisplay();
+
+    // Keep the map and the open place; only the reviews area locks again.
     setMyRatingsMessage("Bitte anmelden, um eigene Bewertungen zu sehen.");
     resetRatingForm();
-
-    selectedPoiId = null;
-    pois = [];
-    renderPoiMarkers();
-    document.getElementById("poiName").textContent = "Bitte Gastronomie auswählen";
-    document.getElementById("poiDetails").innerHTML = "";
     document.getElementById("ratingsList").innerHTML = "<p>Noch keine Gastronomie ausgewählt.</p>";
-    openAuthModal("login");
 }
 
 function openAuthModal(mode) {
@@ -287,11 +300,7 @@ async function deleteCurrentUser() {
 
 async function loadPois() {
     try {
-        const response = await fetch(API_BASE_URL + "/pois", {
-            headers: {
-                "Authorization": sessionToken
-            }
-        });
+        const response = await fetch(API_BASE_URL + "/pois");
 
         if (!response.ok) {
             throw new Error("Could not load POIs");
@@ -306,8 +315,12 @@ async function loadPois() {
 
 function selectPoi(poiId) {
     selectedPoiId = poiId;
+    highlightSelectedMarker();
     loadPoiDetails(poiId);
-    loadRatingsForPoi(poiId);
+
+    if (sessionToken) {
+        loadRatingsForPoi(poiId);
+    }
 }
 
 async function loadRatingsForPoi(poiId) {
@@ -425,158 +438,92 @@ async function loadMyRatings() {
 }
 
 function showRatings(ratings) {
-    const ratingsList = document.getElementById("ratingsList");
-    ratingsList.innerHTML = "";
-
-    if (ratings.length === 0) {
-        ratingsList.textContent = "Keine Bewertungen vorhanden.";
-        return;
-    }
-    const table = document.createElement("table");
-    table.classList.add("ratings-table");
-
-    const tableHead = document.createElement("thead");
-    const headRow = document.createElement("tr");
-    const headers = ["Datum", "Name", "Kommentar", "Bewertung", "Bild"];
-
-    headers.forEach(headerText => {
-        const headerCell = document.createElement("th");
-        headerCell.textContent = headerText;
-        headRow.appendChild(headerCell);
+    renderReviewList(document.getElementById("ratingsList"), ratings, {
+        empty: "Keine Bewertungen vorhanden.",
+        showActions: false
     });
-
-    tableHead.appendChild(headRow);
-    table.appendChild(tableHead);
-
-    const tableBody = document.createElement("tbody");
-
-    ratings.forEach(rating => {
-        const row = document.createElement("tr");
-
-        const dateCell = document.createElement("td");
-        dateCell.textContent = formatDateTime(rating.createdAt);
-        dateCell.classList.add("date-cell");
-        row.appendChild(dateCell);
-
-        const usernameCell = document.createElement("td");
-        usernameCell.textContent = rating.username;
-        row.appendChild(usernameCell);
-
-        const textCell = document.createElement("td");
-        textCell.textContent = rating.text;
-        row.appendChild(textCell);
-
-        const gradeCell = document.createElement("td");
-        gradeCell.innerHTML = formatStars(rating.grade);
-        gradeCell.classList.add("stars-cell");
-        row.appendChild(gradeCell);
-
-        const imageCell = document.createElement("td");
-
-        if (rating.hasImage) {
-            const image = document.createElement("img");
-            image.src = API_BASE_URL + "/images/" + rating.imageId;
-            image.alt = "Bild zur Bewertung";
-            image.classList.add("rating-image");
-            imageCell.appendChild(image);
-        } else {
-            imageCell.textContent = "-";
-        }
-
-        row.appendChild(imageCell);
-        tableBody.appendChild(row);
-    });
-
-    table.appendChild(tableBody);
-    ratingsList.appendChild(table);
 }
 
 function showMyRatings(ratings) {
-    const myRatingsList = document.getElementById("myRatingsList");
-    myRatingsList.innerHTML = "";
+    renderReviewList(document.getElementById("myRatingsList"), ratings, {
+        empty: "Du hast noch keine Bewertungen geschrieben.",
+        showPlace: true,
+        showActions: true
+    });
+}
+
+function renderReviewList(container, ratings, options) {
+    container.innerHTML = "";
 
     if (ratings.length === 0) {
-        myRatingsList.textContent = "Du hast noch keine Bewertungen geschrieben.";
+        const empty = document.createElement("p");
+        empty.className = "review-empty";
+        empty.textContent = options.empty;
+        container.appendChild(empty);
         return;
     }
 
-    const table = document.createElement("table");
-    table.classList.add("ratings-table");
-
-    const tableHead = document.createElement("thead");
-    const headRow = document.createElement("tr");
-    const headers = ["Datum", "Ort", "Kommentar", "Bewertung", "Bild", "Aktionen"];
-
-    headers.forEach(headerText => {
-        const headerCell = document.createElement("th");
-        headerCell.textContent = headerText;
-        headRow.appendChild(headerCell);
-    });
-
-    tableHead.appendChild(headRow);
-    table.appendChild(tableHead);
-
-    const tableBody = document.createElement("tbody");
-
     ratings.forEach(rating => {
-        const row = document.createElement("tr");
+        container.appendChild(buildReviewCard(rating, options));
+    });
+}
 
-        const dateCell = document.createElement("td");
-        dateCell.textContent = formatDateTime(rating.createdAt);
-        dateCell.classList.add("date-cell");
-        row.appendChild(dateCell);
+function buildReviewCard(rating, options) {
+    const card = document.createElement("article");
+    card.className = "review";
 
-        const poiCell = document.createElement("td");
-        poiCell.textContent = rating.poiName || "";
-        row.appendChild(poiCell);
+    const head = document.createElement("div");
+    head.className = "review__head";
 
-        const textCell = document.createElement("td");
-        textCell.textContent = rating.text;
-        row.appendChild(textCell);
+    const stars = document.createElement("span");
+    stars.className = "review__stars";
+    stars.innerHTML = formatStars(rating.grade);
+    head.appendChild(stars);
 
-        const gradeCell = document.createElement("td");
-        gradeCell.innerHTML = formatStars(rating.grade);
-        gradeCell.classList.add("stars-cell");
-        row.appendChild(gradeCell);
+    const meta = document.createElement("span");
+    meta.className = "review__meta";
+    const who = options.showPlace ? (rating.poiName || "") : rating.username;
+    meta.textContent = [who, formatDateTime(rating.createdAt)].filter(Boolean).join(" · ");
+    head.appendChild(meta);
 
-        const imageCell = document.createElement("td");
+    card.appendChild(head);
 
-        if (rating.hasImage) {
-            const image = document.createElement("img");
-            image.src = API_BASE_URL + "/images/" + rating.imageId;
-            image.alt = "Bild zur Bewertung";
-            image.classList.add("rating-image");
-            imageCell.appendChild(image);
-        } else {
-            imageCell.textContent = "-";
-        }
+    if (rating.text) {
+        const text = document.createElement("p");
+        text.className = "review__text";
+        text.textContent = rating.text;
+        card.appendChild(text);
+    }
 
-        row.appendChild(imageCell);
+    if (rating.hasImage) {
+        const image = document.createElement("img");
+        image.className = "review__image";
+        image.src = API_BASE_URL + "/images/" + rating.imageId;
+        image.alt = "Bild zur Bewertung";
+        card.appendChild(image);
+    }
 
-        const actionsCell = document.createElement("td");
+    if (options.showActions) {
+        const actions = document.createElement("div");
+        actions.className = "review__actions";
 
         const editButton = document.createElement("button");
         editButton.type = "button";
         editButton.textContent = "Bearbeiten";
-        editButton.addEventListener("click", () => {
-            startEditRating(rating);
-        });
-        actionsCell.appendChild(editButton);
+        editButton.addEventListener("click", () => startEditRating(rating));
+        actions.appendChild(editButton);
 
         const deleteButton = document.createElement("button");
         deleteButton.type = "button";
+        deleteButton.className = "btn-danger-link";
         deleteButton.textContent = "Löschen";
-        deleteButton.addEventListener("click", () => {
-            deleteRating(rating.id);
-        });
-        actionsCell.appendChild(deleteButton);
+        deleteButton.addEventListener("click", () => deleteRating(rating.id));
+        actions.appendChild(deleteButton);
 
-        row.appendChild(actionsCell);
-        tableBody.appendChild(row);
-    });
+        card.appendChild(actions);
+    }
 
-    table.appendChild(tableBody);
-    myRatingsList.appendChild(table);
+    return card;
 }
 
 function startEditRating(rating) {
@@ -631,14 +578,31 @@ async function deleteRating(ratingId) {
     }
 }
 
+const AMENITY_LABELS = {
+    restaurant: "Restaurant",
+    cafe: "Café",
+    fast_food: "Imbiss",
+    pub: "Kneipe",
+    bar: "Bar",
+    biergarten: "Biergarten"
+};
+
 function showPoiDetails(poi) {
     const poiName = document.getElementById("poiName");
     const poiDetails = document.getElementById("poiDetails");
 
     poiName.textContent = poi.name || "Unbenannter Ort";
+
+    if (poi.amenity) {
+        const chip = document.createElement("span");
+        chip.className = "poi-chip";
+        chip.textContent = AMENITY_LABELS[poi.amenity] || poi.amenity.replace(/_/g, " ");
+        poiName.appendChild(chip);
+    }
+
     poiDetails.innerHTML = "";
     const details = [
-        ["Art", poi.amenity],
+        ["Art", AMENITY_LABELS[poi.amenity] || poi.amenity],
         ["Küche", poi.cuisine],
         ["Telefon", poi.phone],
         ["Webseite", poi.website],
@@ -738,11 +702,7 @@ function formatAddress(poi) {
 
 async function loadPoiDetails(poiId) {
     try {
-        const response = await fetch(API_BASE_URL + "/pois/" + poiId, {
-            headers: {
-                "Authorization": sessionToken
-            }
-        });
+        const response = await fetch(API_BASE_URL + "/pois/" + poiId);
         if (!response.ok) {
             throw new Error("Could not load POI details");
         }
@@ -764,12 +724,23 @@ function renderPoiMarkers() {
             return;
         }
         const marker = L.marker([poi.lat, poi.lon]);
+        marker.poiId = poi.id;
         marker.addTo(map);
         marker.bindPopup(poi.name || "Unbenannter Ort");
         marker.on("click", () => {
             selectPoi(poi.id);
         });
         poiMarkers.push(marker);
+    });
+
+    highlightSelectedMarker();
+}
+
+function highlightSelectedMarker() {
+    poiMarkers.forEach(marker => {
+        if (marker._icon) {
+            marker._icon.classList.toggle("marker-selected", marker.poiId === selectedPoiId);
+        }
     });
 }
 
@@ -840,13 +811,14 @@ document.addEventListener("DOMContentLoaded", () => {
     initTabs();
     initStarRating();
     updateAuthDisplay();
+    loadPois();
     document.getElementById("loginButton").addEventListener("click", () => openAuthModal("login"));
     document.getElementById("registerButton").addEventListener("click", () => openAuthModal("register"));
+    document.getElementById("lockedLoginButton").addEventListener("click", () => openAuthModal("login"));
     document.getElementById("logoutButton").addEventListener("click", logoutUser);
     document.getElementById("deleteUserButton").addEventListener("click", deleteCurrentUser);
     document.getElementById("closeAuthButton").addEventListener("click", closeAuthModal);
     document.getElementById("submitAuthButton").addEventListener("click", submitAuthForm);
     document.getElementById("createRatingButton").addEventListener("click", createRating);
     document.getElementById("cancelEditButton").addEventListener("click", resetRatingForm);
-    openAuthModal("login");
 });

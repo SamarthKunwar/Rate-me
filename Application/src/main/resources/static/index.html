@@ -5,27 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RateMe</title>
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="css/style.css?v=20260709-7">
+    <link rel="stylesheet" href="css/style.css?v=20260709-13">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="js/app.js?v=20260709-7" defer></script>
+    <script src="js/app.js?v=20260709-13" defer></script>
 </head>
 
 <body>
     <header class="app-header">
-        <div>
+        <div class="app-header__brand">
             <h1>RateMe</h1>
-            <p>Bewerte Restaurants, Cafés und Kneipen in und um Zweibrücken</p>
+            <p>Restaurants, Cafés und Kneipen in und um Zweibrücken</p>
         </div>
-        <div class="account-area">
-            <span id="currentUser">Nicht angemeldet</span>
-            <div class="auth-buttons">
-                <button id="loginButton" type="button">Anmelden</button>
-                <button id="registerButton" type="button">Registrieren</button>
-                <button id="logoutButton" type="button">Abmelden</button>
-                <button id="deleteUserButton" type="button">Account löschen</button>
-            </div>
+        <div class="app-header__account">
+            <span id="currentUser" class="app-header__user">Nicht angemeldet</span>
+            <button id="loginButton" type="button" class="btn-primary">Anmelden</button>
+            <button id="registerButton" type="button">Registrieren</button>
+            <button id="logoutButton" type="button">Abmelden</button>
+            <button id="deleteUserButton" type="button" class="btn-danger-link">Account löschen</button>
         </div>
     </header>
 
@@ -49,13 +49,13 @@
                 <input id="authCity" type="text" placeholder="Ort">
             </div>
             <div class="auth-dialog-actions">
-                <button id="submitAuthButton" type="button">Anmelden</button>
+                <button id="submitAuthButton" type="button" class="btn-primary">Anmelden</button>
             </div>
             <small id="authMessage"></small>
         </div>
     </div>
 
-    <main id="appLayout" class="app-layout hidden">
+    <main id="appLayout" class="app-layout">
         <section class="map-section">
             <h2>Karte</h2>
             <div id="map"></div>
@@ -68,33 +68,41 @@
             <section id="ratingsTab" class="tab-content active">
                 <h2 id="poiName">Bitte Gastronomie auswählen</h2>
                 <dl id="poiDetails"></dl>
-                <div class="ratings-overview">
-                    <h3>Bewertungen</h3>
-                    <div id="ratingsList">
-                        <p>Noch keine Gastronomie ausgewählt.</p>
-                    </div>
+
+                <div id="reviewsLocked" class="reviews-locked">
+                    <p>Melde dich an, um Bewertungen zu lesen und selbst zu schreiben.</p>
+                    <button id="lockedLoginButton" type="button" class="btn-primary">Anmelden</button>
                 </div>
-                <div id="ratingForm" class="rating-form">
-                    <h3>Bewertung schreiben</h3>
 
-                    <input id="ratingGrade" type="hidden" value="">
-                    <div class="rating-stars" aria-label="Sterne auswählen">
-                        <button class="star-button" type="button" data-grade="1" aria-label="1 Stern">★</button>
-                        <button class="star-button" type="button" data-grade="2" aria-label="2 Sterne">★</button>
-                        <button class="star-button" type="button" data-grade="3" aria-label="3 Sterne">★</button>
-                        <button class="star-button" type="button" data-grade="4" aria-label="4 Sterne">★</button>
-                        <button class="star-button" type="button" data-grade="5" aria-label="5 Sterne">★</button>
+                <div id="reviewsUnlocked" class="hidden">
+                    <div class="ratings-overview">
+                        <h3>Bewertungen</h3>
+                        <div id="ratingsList">
+                            <p>Noch keine Gastronomie ausgewählt.</p>
+                        </div>
                     </div>
+                    <div id="ratingForm" class="rating-form">
+                        <h3>Bewertung schreiben</h3>
 
-                    <textarea id="ratingText" placeholder="Deine Bewertung"></textarea>
-                    <input id="ratingImage" type="file" accept="image/*">
+                        <input id="ratingGrade" type="hidden" value="">
+                        <div class="rating-stars" aria-label="Sterne auswählen">
+                            <button class="star-button" type="button" data-grade="1" aria-label="1 Stern">★</button>
+                            <button class="star-button" type="button" data-grade="2" aria-label="2 Sterne">★</button>
+                            <button class="star-button" type="button" data-grade="3" aria-label="3 Sterne">★</button>
+                            <button class="star-button" type="button" data-grade="4" aria-label="4 Sterne">★</button>
+                            <button class="star-button" type="button" data-grade="5" aria-label="5 Sterne">★</button>
+                        </div>
 
-                    <div class="rating-actions">
-                        <button id="createRatingButton" type="button">Bewertung speichern</button>
-                        <button id="cancelEditButton" class="hidden" type="button">Bearbeiten abbrechen</button>
+                        <textarea id="ratingText" placeholder="Deine Bewertung"></textarea>
+                        <input id="ratingImage" type="file" accept="image/*">
+
+                        <div class="rating-actions">
+                            <button id="createRatingButton" type="button" class="btn-primary">Bewertung speichern</button>
+                            <button id="cancelEditButton" class="hidden" type="button">Bearbeiten abbrechen</button>
+                        </div>
+
+                        <small id="ratingMessage"></small>
                     </div>
-
-                    <small id="ratingMessage"></small>
                 </div>
             </section>
 
